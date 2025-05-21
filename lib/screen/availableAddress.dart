@@ -3,6 +3,7 @@
 import 'package:coinswitch/controller/allavailableadress.dart';
 import 'package:coinswitch/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../model/availablecrypto.dart';
@@ -14,8 +15,13 @@ class Availableaddress extends StatefulWidget {
   State<Availableaddress> createState() => _AvailableaddressState();
 }
 
-void copyToClipboard() {
-  // Clipboard.setData(ClipboardData(text: bitcoinPublicKey));
+void copyToClipboard(BuildContext context, int index, List available) {
+  final address = available[index].address.value;
+  Clipboard.setData(ClipboardData(text: address));
+  Get.snackbar('Address copied to clipboard...', '',
+      snackPosition: SnackPosition.TOP,
+      maxWidth: 300,
+      padding: EdgeInsets.only(left: 26, top: 20));
 }
 
 final AllAvailableAddress allAvailableAddress = Get.put(AllAvailableAddress());
@@ -29,15 +35,15 @@ class _AvailableaddressState extends State<Availableaddress> {
           itemBuilder: (context, index) {
             final userAsssets = available[index];
             return Padding(
-              padding: EdgeInsets.all(10.0),
+              padding: EdgeInsets.only(top: 5, left: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
                       CircleAvatar(
-                        radius: 25,
-                        backgroundColor: AppColors.cardColor,
+                        radius: 22,
+                        backgroundColor: Colors.transparent,
                         backgroundImage: userAsssets.pictures,
                         // child: userAsssets.pictures,
                       ),
@@ -56,7 +62,7 @@ class _AvailableaddressState extends State<Availableaddress> {
                                 ),
                                 Container(
                                   margin: EdgeInsets.only(left: 10),
-                                  height: 27,
+                                  height: 25,
                                   decoration: BoxDecoration(
                                       color: AppColors.cardColor,
                                       borderRadius: BorderRadius.circular(5)),
@@ -89,7 +95,9 @@ class _AvailableaddressState extends State<Availableaddress> {
                       Padding(
                         padding: const EdgeInsets.only(left: 80),
                         child: IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              copyToClipboard(context, index, available);
+                            },
                             icon: Icon(
                               Icons.copy,
                               size: 20,

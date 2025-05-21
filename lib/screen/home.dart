@@ -10,7 +10,6 @@ import 'package:coinswitch/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ramp_flutter/ramp_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class Home_Screen extends StatefulWidget {
   const Home_Screen({super.key});
@@ -170,7 +169,7 @@ class _Home_ScreenState extends State<Home_Screen>
                           backgroundColor: Color(0xFF3F3F3F),
                           child: Icon(
                             Icons.arrow_outward_rounded,
-                            size: 26,
+                            size: 20,
                             color: AppColors.brandColor,
                           ),
                         ),
@@ -192,7 +191,7 @@ class _Home_ScreenState extends State<Home_Screen>
                         CircleAvatar(
                           backgroundColor: Color(0xFF3F3F3F),
                           child: Icon(Icons.arrow_downward_rounded,
-                              size: 26, color: AppColors.brandColor),
+                              size: 20, color: AppColors.brandColor),
                         ),
                         Text(
                           'Receive',
@@ -218,7 +217,7 @@ class _Home_ScreenState extends State<Home_Screen>
                           child: Icon(
                             Icons.add,
                             color: AppColors.brandColor,
-                            size: 26,
+                            size: 20,
                           ),
                         ),
                         Text('Buy',
@@ -243,7 +242,7 @@ class _Home_ScreenState extends State<Home_Screen>
                           child: Icon(
                             Icons.remove,
                             color: AppColors.brandColor,
-                            size: 26,
+                            size: 20,
                           ),
                         ),
                         Text('Sell',

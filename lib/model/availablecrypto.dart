@@ -55,7 +55,7 @@ List<Availablecrypto> available = [
       balance: assetController.ethereumBalance),
   Availablecrypto(
     pictures: AssetImage(
-      'assets/images/solana-sol-logo.png',
+      'assets/images/Solana-Logo.png',
       // scale: 30,
       // fit: BoxFit.contain,
     ),

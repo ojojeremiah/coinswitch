@@ -45,7 +45,7 @@ class _AssetsState extends State<Assets> {
                   final userAsssets = available[index];
                   return Padding(
                     padding: const EdgeInsets.only(
-                        left: 25, right: 25, top: 12, bottom: 16),
+                        left: 25, right: 25, top: 12, bottom: 14),
                     child: GestureDetector(
                       onTap: () {
                         // AllAddressBalance();
@@ -58,8 +58,8 @@ class _AssetsState extends State<Assets> {
                             children: [
                               isLoading
                                   ? CircleAvatar(
-                                      radius: 25,
-                                      backgroundColor: AppColors.cardColor,
+                                      radius: 20,
+                                      backgroundColor: Colors.transparent,
                                       backgroundImage: userAsssets.pictures,
                                       // child: ,
                                     )
@@ -81,7 +81,7 @@ class _AssetsState extends State<Assets> {
                                             userAsssets.name,
                                             style: const TextStyle(
                                                 color: AppColors.primaryColor,
-                                                fontSize: 16),
+                                                fontSize: 15),
                                           )
                                         : Shimmer.fromColors(
                                             baseColor: AppColors.cardColor,
@@ -110,14 +110,14 @@ class _AssetsState extends State<Assets> {
                                         "${userAsssets.balance}",
                                         style: const TextStyle(
                                             color: AppColors.colorGrey,
-                                            fontSize: 16),
+                                            fontSize: 15),
                                       ),
                                     ),
                                     Text(
                                       "\$ 0.0",
                                       style: TextStyle(
                                           color: AppColors.primaryColor,
-                                          fontSize: 14),
+                                          fontSize: 13),
                                     )
                                   ],
                                 )
