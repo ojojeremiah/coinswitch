@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bitcoin_base/bitcoin_base.dart';
 import 'package:get/get.dart';
 import 'package:solana/base58.dart';
@@ -6,6 +8,7 @@ import 'package:web3dart/web3dart.dart';
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:ed25519_hd_key/ed25519_hd_key.dart';
 import 'package:hex/hex.dart';
+import 'package:xrpl_dart/xrpl_dart.dart';
 
 abstract class UserWalletAddress {
   Future<String> getWalletPrivateKey(String mnemonic);
@@ -17,6 +20,7 @@ abstract class UserWalletAddress {
   Future getBitcoinSVbaseAddressPublicKey(String privateKey);
   Future getSolanaPublicKey(String privateKey);
   Future getDashPublicKey(String privateKey);
+  Future getXrpPublicKey(String privateKey);
 }
 
 class UserWallet extends GetxController implements UserWalletAddress {
@@ -113,5 +117,28 @@ class UserWallet extends GetxController implements UserWalletAddress {
     print(p2pkh.toString().length);
     print("public key ${publicKey.toHex().length}");
     return p2pwkhAddress;
+  }
+
+  @override
+  Future<String> getXrpPublicKey(String privateKey) async {
+    final private = XRPPrivateKey.fromHex(
+      privateKey,
+      algorithm: XRPKeyAlgorithm.ed25519,
+    );
+
+    final getPublicKey = private.getPublic();
+    final addressClass = getPublicKey.toAddress();
+    final xrpAddress = addressClass.address;
+
+    log("===========================");
+    log('$xrpAddress, xrpaddress');
+    log("==============================");
+    log('$addressClass, addressclass');
+    log('==========================');
+
+    final xAddress = addressClass.toXAddress(isTestnet: false);
+    log('$xAddress');
+
+    return xrpAddress;
   }
 }

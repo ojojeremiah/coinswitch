@@ -55,7 +55,7 @@ class _AvailableaddressState extends State<Availableaddress> {
                             Row(
                               children: [
                                 Text(
-                                  userAsssets.name,
+                                  userAsssets.symbol,
                                   style: TextStyle(
                                       color: AppColors.primaryColor,
                                       fontSize: 17),

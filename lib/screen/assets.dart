@@ -1,10 +1,14 @@
 import 'package:coinswitch/controller/allavailableadress.dart';
 import 'package:coinswitch/controller/assets_balance.dart';
+import 'package:coinswitch/controller/websocketServices.dart';
 import 'package:coinswitch/model/availablecrypto.dart';
 import 'package:coinswitch/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
+
+import 'individual_address.dart';
 
 class Assets extends StatefulWidget {
   const Assets({super.key});
@@ -18,6 +22,8 @@ class _AssetsState extends State<Assets> {
   final AllAvailableAddress allAvailableAddress =
       Get.put(AllAvailableAddress());
 
+  final NumberFormat valueFormatter = NumberFormat("#,##0.00", "en_US");
+
   @override
   void initState() {
     // allAddressFunction();
@@ -28,6 +34,29 @@ class _AssetsState extends State<Assets> {
         isLoading = true;
       });
     });
+    connectBitcoinWebSocket();
+    connectEthereumWebSocket();
+    connectSolanaWebSocket();
+    connectBnbWebSocket();
+    connectLtcWebSocket();
+    connectBchWebSocket();
+    connectDogeWebSocket();
+    connectXrpWebSocket();
+  }
+
+  @override
+  void dispose() {
+    // Ensure that the channels are closed properly
+    channel?.sink.close();
+    ethereumchannel?.sink.close();
+    solanachannel?.sink.close();
+    bnbchannel?.sink.close();
+    ltcchannel?.sink.close();
+    tonchannel?.sink.close();
+    bchchannel?.sink.close();
+    dogechannel?.sink.close();
+    xrpchannel?.sink.close();
+    super.dispose();
   }
 
   bool isLoading = false;
@@ -42,14 +71,13 @@ class _AssetsState extends State<Assets> {
             child: ListView.builder(
                 itemCount: 6,
                 itemBuilder: (context, index) {
-                  final userAsssets = available[index];
+                  final userAssets = available[index];
                   return Padding(
                     padding: const EdgeInsets.only(
                         left: 25, right: 25, top: 12, bottom: 14),
                     child: GestureDetector(
                       onTap: () {
-                        // AllAddressBalance();
-                        // Get.to(() => IndividualAdress(cryptoData: crypto));
+                        Get.to(() => IndividualAdress(cryptoData: userAssets));
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -58,9 +86,9 @@ class _AssetsState extends State<Assets> {
                             children: [
                               isLoading
                                   ? CircleAvatar(
-                                      radius: 20,
+                                      radius: 25,
                                       backgroundColor: Colors.transparent,
-                                      backgroundImage: userAsssets.pictures,
+                                      backgroundImage: userAssets.pictures,
                                       // child: ,
                                     )
                                   : Shimmer.fromColors(
@@ -78,17 +106,17 @@ class _AssetsState extends State<Assets> {
                                   children: [
                                     isLoading
                                         ? Text(
-                                            userAsssets.name,
+                                            userAssets.symbol,
                                             style: const TextStyle(
                                                 color: AppColors.primaryColor,
-                                                fontSize: 15),
+                                                fontSize: 16),
                                           )
                                         : Shimmer.fromColors(
                                             baseColor: AppColors.cardColor,
                                             highlightColor:
                                                 Colors.grey.shade800,
                                             child: Container(
-                                              height: 30,
+                                              height: 20,
                                               width: 50,
                                               decoration: BoxDecoration(
                                                   color:
@@ -96,6 +124,55 @@ class _AssetsState extends State<Assets> {
                                                   borderRadius:
                                                       BorderRadius.circular(5)),
                                             )),
+                                    isLoading
+                                        ? Row(
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 5),
+                                                child: Obx(
+                                                  () => Text(
+                                                    '\$${valueFormatter.format(userAssets.priceChange.value)}',
+                                                    style: TextStyle(
+                                                        color: AppColors
+                                                            .primaryColor,
+                                                        fontSize: 13),
+                                                  ),
+                                                ),
+                                              ),
+                                              Obx(
+                                                () => Text(
+                                                  "${userAssets.percentageChange.value.toStringAsFixed(2)}%",
+                                                  style: TextStyle(
+                                                      color: userAssets
+                                                                  .percentageChange
+                                                                  .value <=
+                                                              0
+                                                          ? Colors.red
+                                                          : Colors.green,
+                                                      fontSize: 13),
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        : Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 5),
+                                            child: Shimmer.fromColors(
+                                                baseColor: AppColors.cardColor,
+                                                highlightColor:
+                                                    Colors.grey.shade800,
+                                                child: Container(
+                                                  height: 20,
+                                                  width: 80,
+                                                  decoration: BoxDecoration(
+                                                      color: AppColors
+                                                          .backgroundColor,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5)),
+                                                )),
+                                          ),
                                   ],
                                 ),
                               ),
@@ -107,17 +184,17 @@ class _AssetsState extends State<Assets> {
                                   children: [
                                     Obx(
                                       () => Text(
-                                        "${userAsssets.balance}",
+                                        "${userAssets.balance}",
                                         style: const TextStyle(
                                             color: AppColors.colorGrey,
-                                            fontSize: 15),
+                                            fontSize: 18),
                                       ),
                                     ),
                                     Text(
                                       "\$ 0.0",
                                       style: TextStyle(
                                           color: AppColors.primaryColor,
-                                          fontSize: 13),
+                                          fontSize: 15),
                                     )
                                   ],
                                 )
@@ -136,14 +213,6 @@ class _AssetsState extends State<Assets> {
                     ),
                   );
                 })),
-        // TextButton(
-        //     onPressed: () {
-        //       Get.to(() => const ManageAssets());
-        //     },
-        //     child: const Text(
-        //       "Manage Assets",
-        //       style: TextStyle(color: AppColors.brandColor, fontSize: 15),
-        //     ))
       ],
     );
   }

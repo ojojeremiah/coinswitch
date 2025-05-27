@@ -5,6 +5,7 @@ import 'package:coinswitch/controller/assets.dart';
 import 'package:coinswitch/screen/assets.dart';
 import 'package:coinswitch/screen/availableAddress.dart';
 import 'package:coinswitch/screen/buy_webview.dart';
+import 'package:coinswitch/screen/listofavailablecrypto.dart';
 import 'package:coinswitch/screen/sell_webview.dart';
 import 'package:coinswitch/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +75,7 @@ class _Home_ScreenState extends State<Home_Screen>
                       context: context,
                       builder: (BuildContext context) {
                         return FractionallySizedBox(
-                          heightFactor: 0.87,
+                          heightFactor: 0.47,
                           child: Padding(
                             padding: EdgeInsets.all(10.0),
                             child: Column(
@@ -160,16 +161,51 @@ class _Home_ScreenState extends State<Home_Screen>
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    showModalBottomSheet(
+                        backgroundColor: Colors.grey.shade900,
+                        isScrollControlled: true,
+                        shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20))),
+                        context: context,
+                        builder: (BuildContext context) {
+                          return FractionallySizedBox(
+                            heightFactor: 0.47,
+                            child: Padding(
+                              padding: EdgeInsets.all(10.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                    child: Container(
+                                      height: 30,
+                                      child: Text(
+                                        "Select a Token",
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            color: AppColors.primaryColor,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                  Listofavailablecrypto()
+                                ],
+                              ),
+                            ),
+                          );
+                        });
+                  },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
                       children: [
                         CircleAvatar(
-                          backgroundColor: Color(0xFF3F3F3F),
+                          backgroundColor: AppColors.cardColor,
                           child: Icon(
                             Icons.arrow_outward_rounded,
-                            size: 20,
+                            size: 23,
                             color: AppColors.brandColor,
                           ),
                         ),
@@ -189,9 +225,9 @@ class _Home_ScreenState extends State<Home_Screen>
                     child: Column(
                       children: [
                         CircleAvatar(
-                          backgroundColor: Color(0xFF3F3F3F),
+                          backgroundColor: AppColors.cardColor,
                           child: Icon(Icons.arrow_downward_rounded,
-                              size: 20, color: AppColors.brandColor),
+                              size: 23, color: AppColors.brandColor),
                         ),
                         Text(
                           'Receive',
@@ -213,11 +249,11 @@ class _Home_ScreenState extends State<Home_Screen>
                     child: Column(
                       children: [
                         CircleAvatar(
-                          backgroundColor: Color(0xFF3F3F3F),
+                          backgroundColor: AppColors.cardColor,
                           child: Icon(
                             Icons.add,
                             color: AppColors.brandColor,
-                            size: 20,
+                            size: 23,
                           ),
                         ),
                         Text('Buy',
@@ -238,11 +274,11 @@ class _Home_ScreenState extends State<Home_Screen>
                     child: Column(
                       children: [
                         CircleAvatar(
-                          backgroundColor: Color(0xFF3F3F3F),
+                          backgroundColor: AppColors.cardColor,
                           child: Icon(
                             Icons.remove,
                             color: AppColors.brandColor,
-                            size: 20,
+                            size: 23,
                           ),
                         ),
                         Text('Sell',

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 

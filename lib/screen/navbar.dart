@@ -1,7 +1,6 @@
 import 'package:coinswitch/screen/home.dart';
 import 'package:coinswitch/screen/market.dart';
 import 'package:coinswitch/screen/swap.dart';
-import 'package:coinswitch/screen/transaction_Demo.dart';
 import 'package:coinswitch/service/mnemonic.dart';
 import 'package:coinswitch/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +23,7 @@ class _NavBarState extends State<NavBar> {
       const Home_Screen(),
       const Market(),
       const SwapAsset(),
-      BitcoinTransactionScreen()
+      // BitcoinTransactionScreen()
     ];
     var height = MediaQuery.sizeOf(context).height;
     // var width = MediaQuery.sizeOf(context).width;

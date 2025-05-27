@@ -2,6 +2,7 @@
 
 import 'package:coinswitch/controller/allavailableadress.dart';
 import 'package:coinswitch/controller/assets.dart';
+import 'package:coinswitch/controller/websocketServices.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -14,10 +15,16 @@ class Availablecrypto {
   dynamic address;
   dynamic balance;
   String format;
+  RxDouble priceChange;
+  String symbol;
+  RxDouble percentageChange;
 
   Availablecrypto({
     required this.pictures,
     this.name,
+    required this.symbol,
+    required this.priceChange,
+    required this.percentageChange,
     this.address,
     this.balance,
     required this.format,
@@ -25,6 +32,9 @@ class Availablecrypto {
 
   factory Availablecrypto.fromJson(Map<String, dynamic> json) =>
       Availablecrypto(
+          symbol: json["symbol"],
+          percentageChange: json["percentageChange"],
+          priceChange: json["priceChange"],
           name: json["name"],
           pictures: json["pictures"],
           format: json["format"],
@@ -32,6 +42,9 @@ class Availablecrypto {
           balance: json["balance"]);
 
   Map<String, dynamic> toJson() => {
+        "symbol": symbol,
+        "priceChange": priceChange,
+        "percentageChange": percentageChange,
         "name": name,
         "pictures": pictures,
         "format": format,
@@ -42,51 +55,79 @@ class Availablecrypto {
 
 List<Availablecrypto> available = [
   Availablecrypto(
+      symbol: 'BTC',
+      percentageChange: bitcoinusdtPercentageChange,
+      priceChange: bitcoinPriceChange,
       pictures: AssetImage('assets/images/bitcoin-btc-logo.png'),
-      name: 'BTC',
+      name: 'Bitcoin',
       format: 'UTXO',
       address: allAvailableAddress.bitcoinPublicKey,
       balance: assetController.bitcoinBalance),
   Availablecrypto(
+      symbol: 'ETH',
+      percentageChange: ethereumusdtPercentageChange,
+      priceChange: ethereumusdtPriceChange,
       pictures: AssetImage('assets/images/ethereum.png'),
-      name: 'ETH',
+      name: 'Ethereum',
       format: 'EVM',
       address: allAvailableAddress.ethereumPublicKey,
       balance: assetController.ethereumBalance),
   Availablecrypto(
+    symbol: 'SOL',
+    percentageChange: solanausdtPercentageChange,
     pictures: AssetImage(
       'assets/images/Solana-Logo.png',
-      // scale: 30,
-      // fit: BoxFit.contain,
     ),
+    priceChange: solanaPriceChange,
     format: 'SOL',
-    name: 'SOL',
+    name: 'Solana',
     address: allAvailableAddress.solanaPublicKey,
     balance: assetController.solanaBalance,
   ),
   Availablecrypto(
+      symbol: 'BNB',
+      percentageChange: bnbusdtPercentageChange,
+      priceChange: bnbPriceChange,
       pictures: AssetImage('assets/images/bnb-bnb-logo.png'),
-      name: 'BNB',
+      name: 'Binance Chain',
       format: 'EVM',
       address: allAvailableAddress.ethereumPublicKey,
       balance: assetController.bnbBalance),
   Availablecrypto(
+      symbol: 'LTC',
+      percentageChange: ltcusdtPercentageChange,
+      priceChange: ltcPriceChange,
       pictures: AssetImage('assets/images/Litecoin.svg.png'),
-      name: 'LTC',
+      name: 'Litecoin',
       format: 'EVM',
       address: allAvailableAddress.litecoinPublicKey,
       balance: assetController.litecoinBalance),
   Availablecrypto(
+      symbol: 'DOGE',
+      percentageChange: dogeusdtPercentageChange,
+      priceChange: dogePriceChange,
       pictures: AssetImage(
           'assets/images/dogecoin-doge-logo-6DB3E069BA-seeklogo.com.png'),
-      name: 'DOGE',
+      name: 'Dogecoin',
       format: 'UTXO',
       address: allAvailableAddress.dogecoinPublicKey,
       balance: assetController.dogecoinBalance),
   Availablecrypto(
+      symbol: 'BCH',
+      percentageChange: bchusdtPercentageChange,
+      priceChange: bchPriceChange,
       pictures: AssetImage('assets/images/bitcoin-cash-bch-logo.png'),
-      name: 'BCH',
+      name: 'Bitcoin cash',
       format: 'EVM',
       address: allAvailableAddress.bitcoincashPublicKey,
+      balance: assetController.bitcoincashBalance),
+  Availablecrypto(
+      symbol: 'XRP',
+      percentageChange: xrpusdtPercentageChange,
+      priceChange: xrpPriceChange,
+      pictures: AssetImage('assets/images/xrp-logo.png'),
+      name: 'Ripple',
+      format: 'UTXO',
+      address: allAvailableAddress.xrpPublicKey,
       balance: assetController.bitcoincashBalance),
 ];

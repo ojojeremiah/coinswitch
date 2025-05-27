@@ -1,13 +1,9 @@
-import 'package:coinswitch/screen/About_crypto.dart';
 import 'package:coinswitch/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
-import '../model/coins.dart';
-
 class IndividualAdress extends StatefulWidget {
-  final CryptoData cryptoData;
+  final cryptoData;
   const IndividualAdress({super.key, required this.cryptoData});
 
   @override
@@ -34,33 +30,11 @@ class _IndividualAdressState extends State<IndividualAdress> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              widget.cryptoData.name!,
+              widget.cryptoData.name,
               style: const TextStyle(color: AppColors.primaryColor),
             ),
             IconButton(
-                onPressed: () {
-                  if (widget.cryptoData.sparklineIn7D == null ||
-                      widget.cryptoData.image == null ||
-                      widget.cryptoData.currentPrice == null ||
-                      widget.cryptoData.marketCapChangePercentage24H == null ||
-                      widget.cryptoData.marketCapRank == null ||
-                      widget.cryptoData.marketCap == null ||
-                      widget.cryptoData.fullyDilutedValuation == null ||
-                      widget.cryptoData.circulatingSupply == null ||
-                      widget.cryptoData.maxSupply == null) {
-                    Fluttertoast.showToast(
-                      msg: "Information Unavailable",
-                      toastLength: Toast.LENGTH_LONG,
-                      gravity: ToastGravity.CENTER,
-                      timeInSecForIosWeb: 1,
-                      backgroundColor: Colors.grey[900],
-                      textColor: Colors.white,
-                      fontSize: 14,
-                    );
-                  } else {
-                    Get.to(() => AboutCrypto(cryptoData: widget.cryptoData));
-                  }
-                },
+                onPressed: () {},
                 icon: const Icon(
                   Icons.info_outline_rounded,
                   color: AppColors.primaryColor,
@@ -77,8 +51,8 @@ class _IndividualAdressState extends State<IndividualAdress> {
                 children: [
                   CircleAvatar(
                     radius: 35,
-                    backgroundColor: AppColors.cardColor,
-                    backgroundImage: NetworkImage(widget.cryptoData.image!),
+                    backgroundColor: Colors.transparent,
+                    backgroundImage: widget.cryptoData.pictures,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 10.0),
@@ -109,11 +83,11 @@ class _IndividualAdressState extends State<IndividualAdress> {
                             child: Column(
                               children: [
                                 CircleAvatar(
-                                  backgroundColor: AppColors.brandColor,
+                                  backgroundColor: AppColors.cardColor,
                                   child: Icon(
-                                    Icons.file_upload_outlined,
-                                    size: 26,
-                                    color: AppColors.primaryColor,
+                                    Icons.arrow_outward_rounded,
+                                    size: 23,
+                                    color: AppColors.brandColor,
                                   ),
                                 ),
                                 Text('Send',
@@ -131,9 +105,9 @@ class _IndividualAdressState extends State<IndividualAdress> {
                             child: Column(
                               children: [
                                 CircleAvatar(
-                                  backgroundColor: AppColors.brandColor,
-                                  child: Icon(Icons.file_download_outlined,
-                                      size: 26, color: AppColors.primaryColor),
+                                  backgroundColor: AppColors.cardColor,
+                                  child: Icon(Icons.arrow_downward_rounded,
+                                      size: 23, color: AppColors.brandColor),
                                 ),
                                 Text(
                                   'Receive',
@@ -152,11 +126,11 @@ class _IndividualAdressState extends State<IndividualAdress> {
                             child: Column(
                               children: [
                                 CircleAvatar(
-                                  backgroundColor: AppColors.brandColor,
+                                  backgroundColor: AppColors.cardColor,
                                   child: Icon(
                                     Icons.add,
-                                    color: AppColors.primaryColor,
-                                    size: 26,
+                                    color: AppColors.brandColor,
+                                    size: 23,
                                   ),
                                 ),
                                 Text('Buy',
@@ -268,10 +242,10 @@ class _IndividualAdressState extends State<IndividualAdress> {
                             child: Column(
                               children: [
                                 CircleAvatar(
-                                  backgroundColor: AppColors.brandColor,
+                                  backgroundColor: AppColors.cardColor,
                                   child: Icon(
                                     Icons.more_horiz,
-                                    color: AppColors.primaryColor,
+                                    color: AppColors.brandColor,
                                     size: 26,
                                   ),
                                 ),

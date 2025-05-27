@@ -15,6 +15,7 @@ class AllAvailableAddress extends GetxController {
   var litecoinPublicKey = 'Fetching...'.obs;
   var dogecoinPublicKey = 'Fetching...'.obs;
   var solanaPublicKey = 'Fetching...'.obs;
+  var xrpPublicKey = 'Fetching...'.obs;
   var bitcoincashPublicKey = 'Fetching...'.obs;
   var userwalletPrivateKey = 'Fetching...'.obs;
 
@@ -75,5 +76,11 @@ class AllAvailableAddress extends GetxController {
     bitcoincashPublicKey.value = await allPublicKey.getBitcoincashData();
 
     // log("============================== bnb balance");
+
+    //xrpkey
+    final xrpPublicAddress = await userWallet.getXrpPublicKey(walletPrivateKey);
+    await allPublicKey.setBitcoinAddress(xrpPublicAddress);
+    xrpPublicKey.value = await allPublicKey.getBitcoinData();
+    // await assetController.fetchBitcoinBalance(bitcoinPublicKey.value);
   }
 }
