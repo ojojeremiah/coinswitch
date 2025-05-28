@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class IndividualAdress extends StatefulWidget {
-  final cryptoData;
+  final dynamic cryptoData;
   const IndividualAdress({super.key, required this.cryptoData});
 
   @override
