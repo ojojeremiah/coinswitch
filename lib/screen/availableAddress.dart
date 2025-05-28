@@ -60,22 +60,6 @@ class _AvailableaddressState extends State<Availableaddress> {
                                       color: AppColors.primaryColor,
                                       fontSize: 17),
                                 ),
-                                Container(
-                                  margin: EdgeInsets.only(left: 10),
-                                  height: 25,
-                                  decoration: BoxDecoration(
-                                      color: AppColors.cardColor,
-                                      borderRadius: BorderRadius.circular(5)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(4.0),
-                                    child: Text(
-                                      userAsssets.format,
-                                      style: TextStyle(
-                                          color: AppColors.primaryColor,
-                                          fontSize: 14),
-                                    ),
-                                  ),
-                                )
                               ],
                             ),
                             SizedBox(

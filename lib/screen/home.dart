@@ -75,7 +75,7 @@ class _Home_ScreenState extends State<Home_Screen>
                       context: context,
                       builder: (BuildContext context) {
                         return FractionallySizedBox(
-                          heightFactor: 0.47,
+                          heightFactor: 0.77,
                           child: Padding(
                             padding: EdgeInsets.all(10.0),
                             child: Column(
@@ -172,7 +172,7 @@ class _Home_ScreenState extends State<Home_Screen>
                         context: context,
                         builder: (BuildContext context) {
                           return FractionallySizedBox(
-                            heightFactor: 0.47,
+                            heightFactor: 0.77,
                             child: Padding(
                               padding: EdgeInsets.all(10.0),
                               child: Column(

@@ -16,54 +16,40 @@ class Listofavailablecrypto extends StatelessWidget {
             final userAsssets = available[index];
             return GestureDetector(
               onTap: () {
-                Get.to(SendCrypto());
+                Get.to(SendCrypto(cryptoData: userAsssets));
               },
               child: Padding(
-                padding: EdgeInsets.only(top: 5, left: 10, bottom: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                padding:
+                    EdgeInsets.only(top: 5, left: 10, bottom: 10, right: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
+                      // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        CircleAvatar(
-                          radius: 22,
-                          backgroundColor: Colors.transparent,
-                          backgroundImage: userAsssets.pictures,
-                          // child: userAsssets.pictures,
-                        ),
                         Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    userAsssets.symbol,
-                                    style: TextStyle(
-                                        color: AppColors.primaryColor,
-                                        fontSize: 17),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10),
-                                    height: 25,
-                                    decoration: BoxDecoration(
-                                        color: AppColors.cardColor,
-                                        borderRadius: BorderRadius.circular(5)),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(4.0),
-                                      child: Text(
-                                        userAsssets.format,
-                                        style: TextStyle(
-                                            color: AppColors.primaryColor,
-                                            fontSize: 14),
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ],
+                          padding: const EdgeInsets.only(left: 6, right: 10),
+                          child: CircleAvatar(
+                            radius: 22,
+                            backgroundColor: Colors.transparent,
+                            backgroundImage: userAsssets.pictures,
+                            // child: userAsssets.pictures,
                           ),
+                        ),
+                        Text(
+                          userAsssets.name,
+                          style: TextStyle(
+                              color: AppColors.primaryColor, fontSize: 17),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "\$ 0.0",
+                          style: TextStyle(
+                              color: AppColors.primaryColor, fontSize: 15),
                         ),
                       ],
                     ),
