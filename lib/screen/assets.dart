@@ -21,42 +21,31 @@ class _AssetsState extends State<Assets> {
   final AssetBalance assetBalance = Get.put(AssetBalance());
   final AllAvailableAddress allAvailableAddress =
       Get.put(AllAvailableAddress());
+  final WebSocketController wsController = Get.put(WebSocketController());
 
   final NumberFormat valueFormatter = NumberFormat("#,##0.00", "en_US");
 
+  // Declare WebSocketChannels as nullable for cleanup
+  // WebSocketChannel? channel;
+  // WebSocketChannel? ethereumchannel;
+  // WebSocketChannel? solanachannel;
+  // WebSocketChannel? bnbchannel;
+  // WebSocketChannel? ltcchannel;
+  // WebSocketChannel? tonchannel;
+  // WebSocketChannel? bchchannel;
+  // WebSocketChannel? dogechannel;
+  // WebSocketChannel? xrpchannel;
+
   @override
   void initState() {
-    // allAddressFunction();
-    allAvailableAddress;
     super.initState();
-    Future.delayed(const Duration(milliseconds: 3000)).then((value) {
+
+    // Simulated delay to toggle shimmer loading
+    Future.delayed(const Duration(seconds: 3)).then((_) {
       setState(() {
         isLoading = true;
       });
     });
-    connectBitcoinWebSocket();
-    connectEthereumWebSocket();
-    connectSolanaWebSocket();
-    connectBnbWebSocket();
-    connectLtcWebSocket();
-    connectBchWebSocket();
-    connectDogeWebSocket();
-    connectXrpWebSocket();
-  }
-
-  @override
-  void dispose() {
-    // Ensure that the channels are closed properly
-    channel?.sink.close();
-    ethereumchannel?.sink.close();
-    solanachannel?.sink.close();
-    bnbchannel?.sink.close();
-    ltcchannel?.sink.close();
-    tonchannel?.sink.close();
-    bchchannel?.sink.close();
-    dogechannel?.sink.close();
-    xrpchannel?.sink.close();
-    super.dispose();
   }
 
   bool isLoading = false;
