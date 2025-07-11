@@ -1,7 +1,6 @@
-import 'package:coinswitch/controller/assets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import '../model/availablecrypto.dart';
 import '../utils/theme/app_colors.dart';
 
 class SwapAsset extends StatefulWidget {
@@ -12,60 +11,65 @@ class SwapAsset extends StatefulWidget {
 }
 
 class _SwapAssetState extends State<SwapAsset> {
-  final AssetController assetController = Get.put(AssetController());
+  final RxString selectedSymbol = 'BTC'.obs;
+
+  Availablecrypto? get selectedCrypto =>
+      available.firstWhereOrNull((c) => c.symbol == selectedSymbol.value);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          backgroundColor: AppColors.backgroundColor,
-          title: Center(
-              child: Text(
-            'Swap',
-            style: TextStyle(color: AppColors.primaryColor),
-          ))),
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        backgroundColor: AppColors.backgroundColor,
+        title: Text(
+          'Swap',
+          style: TextStyle(color: AppColors.primaryColor, fontSize: 16),
+          textAlign: TextAlign.center,
+        ),
+        centerTitle: true,
+      ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Obx(() => DropdownButton<String>(
-                  value: assetController.fromCrypto.value,
-                  items: ['BTC', 'ETH', 'SOL'].map((crypto) {
-                    return DropdownMenuItem(value: crypto, child: Text(crypto));
-                  }).toList(),
-                  onChanged: (value) {
-                    assetController.fromCrypto.value = value!;
-                    assetController.fetchExchangeRate();
-                  },
-                )),
-            TextField(
-              onChanged: (value) {
-                assetController.amount.value = value;
-                assetController.updateEstimatedAmount();
-              },
-              decoration: InputDecoration(labelText: 'Amount'),
-              keyboardType: TextInputType.number,
-            ),
-            Obx(() => DropdownButton<String>(
-                  value: assetController.toCrypto.value,
-                  items: ['BTC', 'ETH', 'SOL'].map((crypto) {
-                    return DropdownMenuItem(value: crypto, child: Text(crypto));
-                  }).toList(),
-                  onChanged: (value) {
-                    assetController.toCrypto.value = value!;
-                    assetController.fetchExchangeRate();
-                  },
-                )),
-            Obx(() => Text(
-                  'Estimated: ${assetController.estimatedAmount.value} ${assetController.toCrypto.value}',
-                  style: TextStyle(fontSize: 18, color: AppColors.primaryColor),
-                )),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: assetController.swap,
-              child: Text('Swap'),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.black12,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("From", style: TextStyle(color: Colors.grey)),
+                  const SizedBox(height: 10),
+                  Obx(() => DropdownButton<String>(
+                        isExpanded: true,
+                        value: selectedSymbol.value,
+                        items: available.map((crypto) {
+                          return DropdownMenuItem<String>(
+                            value: crypto.symbol,
+                            child: Text(crypto.name),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          if (value != null) {
+                            selectedSymbol.value = value;
+                          }
+                        },
+                      )),
+                  const SizedBox(height: 10),
+                  Obx(() {
+                    final selected = selectedCrypto;
+                    return Text(
+                      "Available Balance: ${(selected?.balance.value ?? 0.0)}",
+                      style: const TextStyle(color: Colors.grey),
+                    );
+                  }),
+                ],
+              ),
             ),
           ],
         ),

@@ -1,6 +1,5 @@
 import 'package:coinswitch/controller/allavailableadress.dart';
 import 'package:coinswitch/controller/assets_balance.dart';
-import 'package:coinswitch/controller/websocketServices.dart';
 import 'package:coinswitch/model/availablecrypto.dart';
 import 'package:coinswitch/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -21,20 +20,9 @@ class _AssetsState extends State<Assets> {
   final AssetBalance assetBalance = Get.put(AssetBalance());
   final AllAvailableAddress allAvailableAddress =
       Get.put(AllAvailableAddress());
-  final WebSocketController wsController = Get.put(WebSocketController());
+  // final WebSocketController wsController = Get.put(WebSocketController());
 
   final NumberFormat valueFormatter = NumberFormat("#,##0.00", "en_US");
-
-  // Declare WebSocketChannels as nullable for cleanup
-  // WebSocketChannel? channel;
-  // WebSocketChannel? ethereumchannel;
-  // WebSocketChannel? solanachannel;
-  // WebSocketChannel? bnbchannel;
-  // WebSocketChannel? ltcchannel;
-  // WebSocketChannel? tonchannel;
-  // WebSocketChannel? bchchannel;
-  // WebSocketChannel? dogechannel;
-  // WebSocketChannel? xrpchannel;
 
   @override
   void initState() {
@@ -121,7 +109,7 @@ class _AssetsState extends State<Assets> {
                                                     right: 5),
                                                 child: Obx(
                                                   () => Text(
-                                                    '\$${valueFormatter.format(userAssets.priceChange.value)}',
+                                                    '\$${valueFormatter.format(userAssets.priceChange!.value)}',
                                                     style: TextStyle(
                                                         color: AppColors
                                                             .primaryColor,
@@ -130,16 +118,36 @@ class _AssetsState extends State<Assets> {
                                                 ),
                                               ),
                                               Obx(
-                                                () => Text(
-                                                  "${userAssets.percentageChange.value.toStringAsFixed(2)}%",
-                                                  style: TextStyle(
-                                                      color: userAssets
-                                                                  .percentageChange
-                                                                  .value <=
+                                                () => Row(
+                                                  children: [
+                                                    Icon(
+                                                      size: 15,
+                                                      userAssets.percentageChange!
+                                                                  .value >
                                                               0
-                                                          ? Colors.red
-                                                          : Colors.green,
-                                                      fontSize: 13),
+                                                          ? Icons
+                                                              .arrow_drop_up_outlined
+                                                          : Icons
+                                                              .arrow_drop_down_outlined,
+                                                      color: userAssets
+                                                                  .percentageChange!
+                                                                  .value >
+                                                              0
+                                                          ? Colors.green
+                                                          : Colors.red,
+                                                    ),
+                                                    Text(
+                                                      "${userAssets.percentageChange!.value.toStringAsFixed(2)}%",
+                                                      style: TextStyle(
+                                                          color: userAssets
+                                                                      .percentageChange!
+                                                                      .value <=
+                                                                  0
+                                                              ? Colors.red
+                                                              : Colors.green,
+                                                          fontSize: 13),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ],

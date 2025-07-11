@@ -1,6 +1,9 @@
+import 'dart:developer';
+
+import 'package:coinswitch/model/coins.dart';
 import 'package:coinswitch/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:coinswitch/service/send_eth.dart';
 import 'package:get/get.dart';
 
 class SendCrypto extends StatefulWidget {
@@ -13,9 +16,10 @@ class SendCrypto extends StatefulWidget {
 }
 
 class _SendCryptoState extends State<SendCrypto> {
-  final TextEditingController senderAddress = TextEditingController();
+  final TextEditingController reciverAdress = TextEditingController();
   final TextEditingController amount = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final ethService = EthereumService();
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +58,7 @@ class _SendCryptoState extends State<SendCrypto> {
               Stack(
                 children: [
                   TextFormField(
-                    controller: senderAddress,
+                    controller: reciverAdress,
                     maxLines: null,
                     keyboardType: TextInputType.multiline,
                     validator: (v) =>
@@ -128,8 +132,13 @@ class _SendCryptoState extends State<SendCrypto> {
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
                   child: TextButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
+                        final hash = await widget.cryptoData.sendFunc(
+                          reciverAdress.text.trim(),
+                          BigInt.parse(amount.text.trim()),
+                        );
+                        log(hash);
                         // Handle valid form submission here
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(

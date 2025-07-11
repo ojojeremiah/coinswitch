@@ -1,5 +1,5 @@
-import 'package:chart_sparkline/chart_sparkline.dart';
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../model/coins.dart';
@@ -34,6 +34,9 @@ class _AboutCryptoState extends State<AboutCrypto> {
 
   @override
   Widget build(BuildContext context) {
+    final chart = widget.cryptoData.marketCapChangePercentage24H! >= 0
+        ? Colors.green
+        : Colors.red;
     var height = MediaQuery.sizeOf(context).height;
     var width = MediaQuery.sizeOf(context).width;
     return Scaffold(
@@ -65,15 +68,20 @@ class _AboutCryptoState extends State<AboutCrypto> {
                   backgroundColor: AppColors.cardColor,
                   backgroundImage: NetworkImage(widget.cryptoData.image),
                 ),
-                Container(
+                Expanded(
+                  child: Container(
                     margin: EdgeInsets.only(left: 10),
                     child: Text(
                       widget.cryptoData.name,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                       style: TextStyle(
                           color: AppColors.primaryColor,
                           fontWeight: FontWeight.bold,
                           fontSize: 17),
-                    ))
+                    ),
+                  ),
+                )
               ],
             ),
             Padding(
@@ -88,37 +96,99 @@ class _AboutCryptoState extends State<AboutCrypto> {
             ),
             Padding(
               padding: const EdgeInsets.only(top: 10),
-              child: Text(
-                '${widget.cryptoData.marketCapChangePercentage24H}%',
-                style: TextStyle(
-                  color: widget.cryptoData.marketCapChangePercentage24H! >= 0
-                      ? Colors.green
-                      : Colors.red,
-                  fontSize: 15,
-                ),
+              child: Row(
+                children: [
+                  Icon(
+                    size: 20,
+                    widget.cryptoData.marketCapChangePercentage24H! > 0
+                        ? Icons.add
+                        : null,
+                    color: widget.cryptoData.marketCapChangePercentage24H! > 0
+                        ? Colors.green
+                        : Colors.red,
+                  ),
+                  Text(
+                    '${widget.cryptoData.marketCapChangePercentage24H}%',
+                    style: TextStyle(
+                      color:
+                          widget.cryptoData.marketCapChangePercentage24H! >= 0
+                              ? Colors.green
+                              : Colors.red,
+                      fontSize: 15,
+                    ),
+                  ),
+                ],
               ),
             ),
-            Container(
-              margin: EdgeInsets.only(top: 10),
-              height: height * 0.18,
-              width: width * 1,
-              child: Sparkline(
-                data: widget.cryptoData.sparklineIn7D!.price,
-                lineWidth: 1.0,
-                lineColor: widget.cryptoData.marketCapChangePercentage24H! >= 0
-                    ? Colors.green
-                    : Colors.red,
-                fillMode: FillMode.below,
-                fillGradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    // stops: const [0, 0, 7],
-                    colors: [
-                      widget.cryptoData.marketCapChangePercentage24H! >= 0
-                          ? Colors.green
-                          : Colors.red,
-                      Colors.transparent
-                    ]),
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: SizedBox(
+                height: 150,
+                child: LineChart(
+                  LineChartData(
+                    lineTouchData: LineTouchData(
+                      enabled: true,
+                      getTouchedSpotIndicator:
+                          (LineChartBarData barData, List<int> spotIndex) {
+                        return spotIndex.map((index) {
+                          return TouchedSpotIndicatorData(
+                              FlLine(
+                                  color: Colors.grey,
+                                  strokeWidth: 1,
+                                  dashArray: [6, 3]),
+                              FlDotData(show: true));
+                        }).toList();
+                      },
+                      touchTooltipData: LineTouchTooltipData(
+                        tooltipBgColor: Colors.black.withOpacity(0.8),
+                        tooltipRoundedRadius: 8,
+                        getTooltipItems: (touchedSpots) {
+                          return touchedSpots.map((spot) {
+                            return LineTooltipItem(
+                              "\$${spot.y.toStringAsFixed(2)}",
+                              const TextStyle(color: Colors.white),
+                            );
+                          }).toList();
+                        },
+                      ),
+                      touchCallback: (event, response) {
+                        // Optional: Handle touch event
+                      },
+                      handleBuiltInTouches: true,
+                    ),
+                    gridData: FlGridData(show: false),
+                    titlesData: FlTitlesData(show: false),
+                    borderData: FlBorderData(show: false),
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots: widget.cryptoData.sparklineIn7D!.price
+                            .sublist(
+                                widget.cryptoData.sparklineIn7D!.price.length -
+                                    24)
+                            .asMap()
+                            .entries
+                            .map((e) => FlSpot(e.key.toDouble(), e.value))
+                            .toList(),
+                        isCurved: true,
+                        color: chart,
+                        barWidth: 2,
+                        dotData: FlDotData(show: false),
+                        belowBarData: BarAreaData(
+                          show: true,
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              chart.withOpacity(0.3),
+                              Colors.transparent,
+                            ],
+                          ),
+                          // gradient: const Offset(0, 1),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
             Container(

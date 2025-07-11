@@ -105,7 +105,9 @@ class _CryptoDataState extends State<CryptoData> {
                                   height: height * 0.05,
                                   width: width * 0.2,
                                   child: Sparkline(
-                                    data: crypto.sparklineIn7D!.price,
+                                    data: crypto.sparklineIn7D!.price.sublist(
+                                        crypto.sparklineIn7D!.price.length -
+                                            24),
                                     lineWidth: 1.0,
                                     lineColor:
                                         crypto.marketCapChangePercentage24H! >=

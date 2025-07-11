@@ -12,8 +12,8 @@ import 'package:get/get.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env.development");
   await setupApplication();
-  // await dotenv.load();
   await _setupNotifications();
   runApp(MyApp());
 }

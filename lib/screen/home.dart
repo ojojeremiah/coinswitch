@@ -10,7 +10,6 @@ import 'package:coinswitch/screen/sell_webview.dart';
 import 'package:coinswitch/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:ramp_flutter/ramp_flutter.dart';
 
 class Home_Screen extends StatefulWidget {
   const Home_Screen({super.key});
@@ -218,7 +217,7 @@ class _Home_ScreenState extends State<Home_Screen>
                 ),
                 GestureDetector(
                   onTap: () {
-                    Get.to(() => RampFlutter());
+                    // Get.to(() => );
                   },
                   child: Padding(
                     padding: EdgeInsets.all(8.0),

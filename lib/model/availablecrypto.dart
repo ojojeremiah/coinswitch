@@ -3,33 +3,42 @@
 import 'package:coinswitch/controller/allavailableadress.dart';
 import 'package:coinswitch/controller/assets.dart';
 import 'package:coinswitch/controller/websocketServices.dart';
+import 'package:coinswitch/service/send_eth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 final AllAvailableAddress allAvailableAddress = Get.put(AllAvailableAddress());
 final AssetController assetController = Get.put(AssetController());
 final WebSocketController wsController = Get.put(WebSocketController());
+final ethService = EthereumService();
 
-class Availablecrypto {
+class Availablecrypto extends GetxController {
   dynamic name;
-  ImageProvider pictures;
+  ImageProvider? pictures;
   dynamic address;
   dynamic balance;
-  String format;
-  RxDouble priceChange;
-  String symbol;
-  RxDouble percentageChange;
+  dynamic format;
+  RxDouble? priceChange;
+  dynamic symbol;
+  RxDouble? percentageChange;
+  dynamic sendFunc;
 
   Availablecrypto({
-    required this.pictures,
+    this.pictures,
     this.name,
-    required this.symbol,
-    required this.priceChange,
-    required this.percentageChange,
+    this.symbol,
+    this.priceChange,
+    this.percentageChange,
     this.address,
     this.balance,
-    required this.format,
+    this.format,
+    this.sendFunc,
   });
+
+  // var selectedSymbol = 'BTC'.obs;
+  // Availablecrypto? get selectedCrypto =>
+  //     available.firstWhereOrNull((c) => c.symbol == selectedSymbol.value);
 
   factory Availablecrypto.fromJson(Map<String, dynamic> json) =>
       Availablecrypto(
@@ -40,7 +49,8 @@ class Availablecrypto {
           pictures: json["pictures"],
           format: json["format"],
           address: json["address"],
-          balance: json["balance"]);
+          balance: json["balance"],
+          sendFunc: json["sendFunc"]);
 
   Map<String, dynamic> toJson() => {
         "symbol": symbol,
@@ -50,7 +60,8 @@ class Availablecrypto {
         "pictures": pictures,
         "format": format,
         "address": address,
-        "balance": balance
+        "balance": balance,
+        "sendFunc": sendFunc,
       };
 }
 
@@ -64,17 +75,18 @@ List<Availablecrypto> available = [
     format: 'UTXO',
     address: allAvailableAddress.bitcoinPublicKey,
     balance: assetController.bitcoinBalance,
+    sendFunc: (),
   ),
   Availablecrypto(
-    symbol: 'ETH',
-    percentageChange: wsController.percentageChanges['ETH-USDT'] ?? 0.0.obs,
-    priceChange: wsController.priceChanges['ETH-USDT'] ?? 0.0.obs,
-    pictures: AssetImage('assets/images/ethereum.png'),
-    name: 'Ethereum',
-    format: 'EVM',
-    address: allAvailableAddress.ethereumPublicKey,
-    balance: assetController.ethereumBalance,
-  ),
+      symbol: 'ETH',
+      percentageChange: wsController.percentageChanges['ETH-USDT'] ?? 0.0.obs,
+      priceChange: wsController.priceChanges['ETH-USDT'] ?? 0.0.obs,
+      pictures: AssetImage('assets/images/ethereum.png'),
+      name: 'Ethereum',
+      format: 'EVM',
+      address: allAvailableAddress.ethereumPublicKey,
+      balance: assetController.ethereumBalance,
+      sendFunc: ethService.sendEth),
   Availablecrypto(
     symbol: 'SOL',
     percentageChange: wsController.percentageChanges['SOL-USDT'] ?? 0.0.obs,
