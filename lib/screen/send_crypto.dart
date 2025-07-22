@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:coinswitch/model/coins.dart';
 import 'package:coinswitch/utils/theme/app_colors.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:coinswitch/service/send_eth.dart';
 import 'package:get/get.dart';
@@ -134,12 +134,31 @@ class _SendCryptoState extends State<SendCrypto> {
                   child: TextButton(
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        final hash = await widget.cryptoData.sendFunc(
-                          reciverAdress.text.trim(),
-                          BigInt.parse(amount.text.trim()),
-                        );
-                        log(hash);
-                        // Handle valid form submission here
+                        try {
+                          final input = amount.text;
+                          final receiver = reciverAdress.text.trim();
+
+                          dynamic amountValue;
+
+                          if (double.tryParse(input) != null) {
+                            // For decimal input (e.g., 0.5, 1.25), return as double
+                            amountValue = double.parse(input);
+                          } else if (BigInt.tryParse(input) != null) {
+                            // For integer input, treat it as BigInt
+                            amountValue = BigInt.parse(input);
+                          } else {
+                            throw Exception("Invalid amount format");
+                          }
+
+                          await widget.cryptoData
+                              .sendFunc(receiver, amountValue);
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content:
+                                    Text('Invalid amount: ${e.toString()}')),
+                          );
+                        }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(

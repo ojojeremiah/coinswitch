@@ -32,7 +32,7 @@ class UserWallet extends GetxController implements UserWalletAddress {
     final master = await ED25519_HD_KEY.getMasterKeyFromSeed(seed);
     final privateKey = HEX.encode(master.key);
     privateAssetKey = privateKey;
-    print(privateAssetKey);
+    log(privateAssetKey);
     return privateKey;
   }
 

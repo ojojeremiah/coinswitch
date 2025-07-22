@@ -10,14 +10,14 @@ class AllAvailableAddress extends GetxController {
   final userMnemonic userAssetMnemonic = userMnemonic();
   final AssetController assetController = Get.put(AssetController());
 
-  var bitcoinPublicKey = 'Fetching...'.obs;
-  var ethereumPublicKey = 'Fetching...'.obs;
-  var litecoinPublicKey = 'Fetching...'.obs;
-  var dogecoinPublicKey = 'Fetching...'.obs;
-  var solanaPublicKey = 'Fetching...'.obs;
-  var xrpPublicKey = 'Fetching...'.obs;
-  var bitcoincashPublicKey = 'Fetching...'.obs;
-  var userwalletPrivateKey = 'Fetching...'.obs;
+  var bitcoinPublicKey = ''.obs;
+  var ethereumPublicKey = ''.obs;
+  var litecoinPublicKey = ''.obs;
+  var dogecoinPublicKey = ''.obs;
+  var solanaPublicKey = ''.obs;
+  var xrpPublicKey = ''.obs;
+  var bitcoincashPublicKey = ''.obs;
+  var userwalletPrivateKey = ''.obs;
 
   @override
   void onInit() {
@@ -36,14 +36,20 @@ class AllAvailableAddress extends GetxController {
         await userWallet.getBitcoinbaseAddressPublicKey(walletPrivateKey);
     await allPublicKey.setBitcoinAddress(bitcoinPublicAddress);
     bitcoinPublicKey.value = await allPublicKey.getBitcoinData();
-    await assetController.fetchBitcoinBalance(bitcoinPublicKey.value);
+    if (bitcoinPublicKey.value.isNotEmpty &&
+        bitcoinPublicKey.value.length % 2 == 0) {
+      await assetController.fetchBitcoinBalance(bitcoinPublicKey.value);
+    }
 
     //ethereumkey
     final ethereumPublicAddress =
         await userWallet.getEthereumPublicKey(walletPrivateKey);
     await allPublicKey.setEthereumAddress("$ethereumPublicAddress");
     ethereumPublicKey.value = await allPublicKey.getEthereumData();
-    await assetController.fetchEthereumBalance(ethereumPublicKey.value);
+    if (ethereumPublicKey.value.isNotEmpty &&
+        ethereumPublicKey.value.length % 2 == 0) {
+      await assetController.fetchEthereumBalance(ethereumPublicKey.value);
+    }
 
     //litecoinKey
     final litecoinPublicAddress =

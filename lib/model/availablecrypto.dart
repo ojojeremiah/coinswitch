@@ -3,7 +3,9 @@
 import 'package:coinswitch/controller/allavailableadress.dart';
 import 'package:coinswitch/controller/assets.dart';
 import 'package:coinswitch/controller/websocketServices.dart';
+import 'package:coinswitch/service/bitcoin_transaction.dart';
 import 'package:coinswitch/service/send_eth.dart';
+import 'package:coinswitch/service/solana_transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -12,6 +14,7 @@ final AllAvailableAddress allAvailableAddress = Get.put(AllAvailableAddress());
 final AssetController assetController = Get.put(AssetController());
 final WebSocketController wsController = Get.put(WebSocketController());
 final ethService = EthereumService();
+final sendBTC = BitcoinTransaction();
 
 class Availablecrypto extends GetxController {
   dynamic name;
@@ -75,7 +78,7 @@ List<Availablecrypto> available = [
     format: 'UTXO',
     address: allAvailableAddress.bitcoinPublicKey,
     balance: assetController.bitcoinBalance,
-    sendFunc: (),
+    sendFunc: sendBTC.sendBitcoin,
   ),
   Availablecrypto(
       symbol: 'ETH',
@@ -88,15 +91,15 @@ List<Availablecrypto> available = [
       balance: assetController.ethereumBalance,
       sendFunc: ethService.sendEth),
   Availablecrypto(
-    symbol: 'SOL',
-    percentageChange: wsController.percentageChanges['SOL-USDT'] ?? 0.0.obs,
-    priceChange: wsController.priceChanges['SOL-USDT'] ?? 0.0.obs,
-    pictures: AssetImage('assets/images/Solana-Logo.png'),
-    name: 'Solana',
-    format: 'SOL',
-    address: allAvailableAddress.solanaPublicKey,
-    balance: assetController.solanaBalance,
-  ),
+      symbol: 'SOL',
+      percentageChange: wsController.percentageChanges['SOL-USDT'] ?? 0.0.obs,
+      priceChange: wsController.priceChanges['SOL-USDT'] ?? 0.0.obs,
+      pictures: AssetImage('assets/images/Solana-Logo.png'),
+      name: 'Solana',
+      format: 'SOL',
+      address: allAvailableAddress.solanaPublicKey,
+      balance: assetController.solanaBalance,
+      sendFunc: sendSol),
   Availablecrypto(
     symbol: 'BNB',
     percentageChange: wsController.percentageChanges['BNB-USDT'] ?? 0.0.obs,

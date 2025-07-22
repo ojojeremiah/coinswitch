@@ -9,6 +9,7 @@ import 'package:coinswitch/screen/listofavailablecrypto.dart';
 import 'package:coinswitch/screen/sell_webview.dart';
 import 'package:coinswitch/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:get/get.dart';
 
 class Home_Screen extends StatefulWidget {

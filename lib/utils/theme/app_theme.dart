@@ -84,11 +84,11 @@ class AppThemes {
       opacity: 1,
       size: 20.w,
     ),
-    tabBarTheme: const TabBarTheme(
-      indicatorSize: TabBarIndicatorSize.tab,
-      labelColor: AppColors.colorGrey,
-      unselectedLabelColor: AppColors.primaryColor,
-    ),
+    // tabBarTheme: const TabBarTheme(
+    //   indicatorSize: TabBarIndicatorSize.tab,
+    //   labelColor: AppColors.colorGrey,
+    //   unselectedLabelColor: AppColors.primaryColor,
+    // ),
     checkboxTheme: CheckboxThemeData(
       fillColor: MaterialStateProperty.resolveWith<Color?>(
               (Set<MaterialState> states) {
@@ -223,11 +223,11 @@ class AppThemes {
       opacity: 1,
       size: 30.sp,
     ),
-    tabBarTheme: const TabBarTheme(
-      indicatorSize: TabBarIndicatorSize.tab,
-      labelColor: AppColors.primaryColor,
-      unselectedLabelColor: AppColors.cardColor,
-    ),
+    // tabBarTheme: const TabBarTheme(
+    //   indicatorSize: TabBarIndicatorSize.tab,
+    //   labelColor: AppColors.primaryColor,
+    //   unselectedLabelColor: AppColors.cardColor,
+    // ),
     checkboxTheme: CheckboxThemeData(
       fillColor: MaterialStateProperty.resolveWith<Color?>(
               (Set<MaterialState> states) {

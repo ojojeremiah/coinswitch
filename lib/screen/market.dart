@@ -21,9 +21,9 @@ class _MarketState extends State<Market> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(milliseconds: 3000)).then((value) {
-      setState(() {
-        isLoading = true;
-      });
+      // setState(() {
+      //   isLoading = true;
+      // });
     });
   }
 
@@ -33,7 +33,7 @@ class _MarketState extends State<Market> {
     const Expanded(child: CryptoData()),
     Expanded(child: NTFs())
   ];
-  bool isLoading = false;
+  // bool isLoading = false;
   Widget currentPage = const CryptoData();
 
   @override
