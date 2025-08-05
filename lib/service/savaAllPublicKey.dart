@@ -10,6 +10,7 @@ class AllPublicKey {
   String solanaPublicKey = "";
   String bitcoincashPublicKey = "";
   String xrpPublicKey = "";
+  String tronPublicKey = "";
 
   //Save BitcoinPublicKey
   Future<void> loadBitcoinAddress() async {
@@ -47,6 +48,24 @@ class AllPublicKey {
   Future<String> getEthereumData() async {
     await loadEthereumAddress();
     return ethereumPublicKey;
+  }
+
+  Future<void> loadtronAddress() async {
+    final String? assetLoadPrivateKey =
+        await _storage.read(key: 'tronPublicKey');
+    if (assetLoadPrivateKey != null) {
+      final String assetDataMnemonic = assetLoadPrivateKey;
+      tronPublicKey = assetDataMnemonic;
+    }
+  }
+
+  Future<void> settronAddress(String key) async {
+    await _storage.write(key: 'tronPublicKey', value: key);
+  }
+
+  Future<String> gettronData() async {
+    await loadtronAddress();
+    return tronPublicKey;
   }
 
   //Save LitecoinPublicKey

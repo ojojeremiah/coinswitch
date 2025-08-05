@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_typing_uninitialized_variables
-
 import 'package:coinswitch/controller/allavailableadress.dart';
 import 'package:coinswitch/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -18,10 +16,31 @@ class Availableaddress extends StatefulWidget {
 void copyToClipboard(BuildContext context, int index, List available) {
   final address = available[index].address.value;
   Clipboard.setData(ClipboardData(text: address));
-  Get.snackbar('Address copied to clipboard...', '',
-      snackPosition: SnackPosition.TOP,
-      maxWidth: 300,
-      padding: EdgeInsets.only(left: 26, top: 20));
+  Get.snackbar(
+    '',
+    '',
+    snackPosition: SnackPosition.TOP,
+    maxWidth: 200,
+    padding: EdgeInsets.only(left: 10, top: 20),
+    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+    icon: Padding(
+      padding: const EdgeInsets.only(left: 20.0, bottom: 6),
+      child: Image.asset(
+        'assets/images/checker.png',
+        height: 24,
+        width: 24,
+      ),
+    ),
+    titleText: Container(
+      height: 20,
+      child: Text(
+        'Address copied...',
+        style: TextStyle(
+            fontSize: 14,
+            color: AppColors.primaryColor), // Set your desired font size here
+      ),
+    ),
+  );
 }
 
 final AllAvailableAddress allAvailableAddress = Get.put(AllAvailableAddress());

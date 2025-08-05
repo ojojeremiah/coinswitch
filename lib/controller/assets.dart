@@ -17,7 +17,8 @@ class AssetController extends GetxController {
   var nfts = <NftModel>[].obs;
   var bitcoinBalance = 0.obs;
   var ethereumBalance = 0.obs;
-  var dogecoinBalance = 0.obs;
+  var polygonBalance = "".obs;
+  var usdtercBalance = "".obs;
   var litecoinBalance = 0.obs;
   var bnbBalance = "".obs;
   var solanaBalance = "".obs;
@@ -165,11 +166,33 @@ class AssetController extends GetxController {
     }
   }
 
-  Future fetchDogeBalance(String assetAddressBalance) async {
+  Future fetchPolygonBalance(String assetAddressBalance) async {
     try {
       var cryptoList =
-          await assetService.fetchBalanceForDoge(assetAddressBalance);
-      dogecoinBalance.value = cryptoList;
+          await assetService.fetchBalanceForPolygon(assetAddressBalance);
+      polygonBalance.value = cryptoList;
+      log("=========================== Polbalance${polygonBalance.value}");
+    } on DioException catch (e) {
+      final errorMessage = DioExceptions.fromDioError(e).toString();
+      Fluttertoast.showToast(
+        msg: "Network Connection failed",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.grey[900],
+        textColor: Colors.white,
+        fontSize: 14,
+      );
+      throw errorMessage;
+    }
+  }
+
+  Future fetchErcUsdtBalance(String assetAddressBalance) async {
+    try {
+      var cryptoList =
+          await assetService.fetchBalanceForUsdtTetherErc(assetAddressBalance);
+      usdtercBalance.value = cryptoList;
+      log("=========================== usdtbalance${usdtercBalance.value}");
     } on DioException catch (e) {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       Fluttertoast.showToast(

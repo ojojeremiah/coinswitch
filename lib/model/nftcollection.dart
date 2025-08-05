@@ -26,7 +26,7 @@ class NftModel {
   String wikiUrl;
   String discordUrl;
   String telegramUrl;
-  String twitterUsername;
+  String? twitterUsername;
   String instagramUsername;
   List<Contract> contracts;
 

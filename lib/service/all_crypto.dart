@@ -6,6 +6,7 @@ import 'package:coinswitch/service/dio_exception.dart';
 import 'package:coinswitch/service/endpoints.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 List<CryptoData> assets = [];
@@ -43,18 +44,13 @@ class AssetService {
 
   Future fetchBalanceForBitcoin(String assetAddress) async {
     try {
-      final response = await dioClient.get(
-        Endpoints.assetBalanceHead +
-            Endpoints.assetBalanceNetworkforBitcoin +
-            Endpoints.assetBalanceMiddle +
-            assetAddress +
-            Endpoints.assetBalanceTail,
-      );
+      final response =
+          await dioClient.get(dotenv.env['BIT_BALANCE_URL']! + assetAddress);
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = response.data;
-        final int assets = data['final_balance'];
-        // log("$assets");
+        final int assets = data['data']['balance'];
+        log("====================== btc balance $assets");
         return assets;
       } else {
         throw Exception('Failed to load assets');
@@ -107,6 +103,44 @@ class AssetService {
     }
   }
 
+  Future fetchBalanceForUsdtTetherErc(String assetAddress) async {
+    try {
+      final response = await dioClient
+          .get(dotenv.env['ETHER_BALANCE_CHECKER']!, queryParameters: {
+        "chainid": 1,
+        "module": "account",
+        "action": "balance",
+        "contractaddress": dotenv.env['ETHER_USDT_CONTRACT_ADDRESS']!,
+        "address": assetAddress,
+        "tag": "latest",
+        "apikey": dotenv.env['ETHER_BALANCE_CHECKER_TAIL']!
+      });
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = response.data;
+        final assets = data['result'] ?? '0';
+
+        log("========usdt  $assets");
+        return assets;
+      } else {
+        log("Failed to losd assets");
+        throw Exception('Failed to load assets');
+      }
+    } on DioException catch (e) {
+      final errorMessage = DioExceptions.fromDioError(e).toString();
+      Fluttertoast.showToast(
+        msg: "Network Connection failed",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.grey[900],
+        textColor: Colors.white,
+        fontSize: 14,
+      );
+      throw errorMessage;
+    }
+  }
+
   Future fetchBalanceForLitecoin(String assetAddressBalance) async {
     try {
       final response = await dioClient.get(
@@ -140,22 +174,26 @@ class AssetService {
     }
   }
 
-  Future fetchBalanceForDoge(String assetAddressBalance) async {
+  Future fetchBalanceForPolygon(String assetAddress) async {
     try {
-      final response = await dioClient.get(
-        Endpoints.assetBalanceHead +
-            Endpoints.assetBalanceNetworkForDoge +
-            Endpoints.assetBalanceMiddle +
-            assetAddressBalance +
-            Endpoints.assetBalanceTail,
-      );
+      final response = await dioClient
+          .get(dotenv.env['ETHER_BALANCE_CHECKER']!, queryParameters: {
+        "chainid": 137,
+        "module": "account",
+        "action": "balance",
+        "address": assetAddress,
+        "tag": "latest",
+        "apikey": dotenv.env['ETHER_BALANCE_CHECKER_TAIL']!
+      });
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = response.data;
-        final int assets = data['final_balance'];
-        // log("$assets");
+        final assets = data['result'] ?? '0';
+
+        log("========Pol  $assets");
         return assets;
       } else {
+        log("Failed to losd assets");
         throw Exception('Failed to load assets');
       }
     } on DioException catch (e) {
@@ -175,19 +213,22 @@ class AssetService {
 
   Future fetchBalanceForBnB(String assetAddress) async {
     try {
-      final response =
-          await dioClient.get(Endpoints.bscapisac, queryParameters: {
+      final response = await dioClient
+          .get(dotenv.env['ETHER_BALANCE_CHECKER']!, queryParameters: {
+        "chainid": 56,
         "module": "account",
         "action": "balance",
         "address": assetAddress,
-        "apikey": Endpoints.bnbAPIKey
+        "tag": "latest",
+        "apikey": dotenv.env['ETHER_BALANCE_CHECKER_TAIL']!
       });
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = response.data;
-        final String assets = data['result'];
+        final assets = data['result']?.toString() ?? '0';
+        // final assets = data['result'];
         log("====================== bnb adress");
-        log(assets);
+        log('======= bnb$assets');
         return assets;
       } else {
         throw Exception('Failed to load assets');

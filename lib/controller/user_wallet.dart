@@ -1,7 +1,12 @@
 import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:bitcoin_base/bitcoin_base.dart';
+import 'package:blockchain_utils/hex/hex.dart';
+import 'package:crypto/crypto.dart';
 import 'package:get/get.dart';
+import 'package:pointycastle/digests/keccak.dart';
+import 'package:pointycastle/ecc/curves/secp256k1.dart';
 import 'package:solana/base58.dart';
 import 'package:solana/solana.dart';
 import 'package:web3dart/web3dart.dart';
@@ -9,6 +14,7 @@ import 'package:bip39/bip39.dart' as bip39;
 import 'package:ed25519_hd_key/ed25519_hd_key.dart';
 import 'package:hex/hex.dart';
 import 'package:xrpl_dart/xrpl_dart.dart';
+import 'package:bs58check/bs58check.dart';
 
 abstract class UserWalletAddress {
   Future<String> getWalletPrivateKey(String mnemonic);
@@ -21,6 +27,7 @@ abstract class UserWalletAddress {
   Future getSolanaPublicKey(String privateKey);
   Future getDashPublicKey(String privateKey);
   Future getXrpPublicKey(String privateKey);
+  Future getTronPublicKey(String privateKey);
 }
 
 class UserWallet extends GetxController implements UserWalletAddress {
@@ -140,5 +147,53 @@ class UserWallet extends GetxController implements UserWalletAddress {
     log('$xAddress');
 
     return xrpAddress;
+  }
+
+  @override
+  Future getTronPublicKey(String privateKeyHex) async {
+    final privateKey = BigInt.parse(privateKeyHex, radix: 16);
+    final domainParams = ECCurve_secp256k1();
+    final G = domainParams.G;
+    final publicKey = G * privateKey;
+
+    final x = publicKey!.x!.toBigInteger()!;
+    final y = publicKey.y!.toBigInteger()!;
+
+    final pubKeyBytes = Uint8List.fromList([
+      0x04,
+      ..._bigIntToBytes(x, 32),
+      ..._bigIntToBytes(y, 32),
+    ]);
+
+    final hashed = sha3(pubKeyBytes.sublist(1)); // remove 0x04 prefix
+    final addressHex = '41' +
+        hex.encode(hashed).substring(0, 40); // Tron addresses start with '41'
+    final addressBytes = hex.decode(addressHex);
+
+// ✅ Use base58CheckEncode from bs58check package (not base58encode)
+    final base58Address = base58CheckEncode(Uint8List.fromList(addressBytes));
+
+    log("Tron address ==============$base58Address");
+
+    return base58Address;
+  }
+
+  String base58CheckEncode(Uint8List input) {
+    final hash0 = sha256.convert(input).bytes;
+    final hash1 = sha256.convert(hash0).bytes;
+    final checksum = hash1.sublist(0, 4);
+    final addressBytes = Uint8List.fromList(input + checksum);
+    return base58encode(addressBytes);
+  }
+
+  Uint8List sha3(Uint8List input) {
+    final digest = KeccakDigest(256);
+
+    return Uint8List.fromList(digest.process(input));
+  }
+
+  Uint8List _bigIntToBytes(BigInt number, int length) {
+    final bytes = number.toRadixString(16).padLeft(length * 2, '0');
+    return Uint8List.fromList(hex.decode(bytes));
   }
 }

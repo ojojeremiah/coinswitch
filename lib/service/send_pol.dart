@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:http/http.dart';
 
-class EthereumService {
+class BnbTransactionService {
   String? rpcUrl;
   Web3Client? client;
   EthPrivateKey? credentials;
@@ -13,7 +13,7 @@ class EthereumService {
       Get.put(AllAvailableAddress());
 
   Future<void> initialize() async {
-    rpcUrl = dotenv.env['RPC_URL'] ?? '';
+    rpcUrl = dotenv.env['BNB_RPC_URL'] ?? '';
     if (rpcUrl!.isEmpty) throw Exception('RPC_URL not found in .env');
 
     final privateKey = allAvailableAddress.userwalletPrivateKey.value;
@@ -23,7 +23,7 @@ class EthereumService {
     credentials = EthPrivateKey.fromHex(privateKey);
   }
 
-  Future<String> sendEth(String toAddressHex, double amountInEth) async {
+  Future<String> sendBnb(String toAddressHex, double amountInEth) async {
     try {
       await initialize();
 
@@ -61,8 +61,8 @@ class EthereumService {
         maxGas: 21000,
       );
 
-      final txHash1 =
-          await client!.sendTransaction(credentials!, tx1, chainId: 1);
+      final txHash1 = await client!
+          .sendTransaction(credentials!, tx1, chainId: 97); // chainId for test
 
       // Transaction 2: send fee to feeReceiver
       final tx2 = Transaction(
@@ -73,11 +73,12 @@ class EthereumService {
         maxGas: 21000,
       );
 
-      await client!.sendTransaction(credentials!, tx2, chainId: 1);
+      await client!
+          .sendTransaction(credentials!, tx2, chainId: 97); // chainId for test
 
       return txHash1;
     } catch (e, st) {
-      print('sendEth error: $e');
+      print('sendBnb error: $e');
       print(st);
       rethrow;
     }

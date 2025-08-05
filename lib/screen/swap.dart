@@ -1,3 +1,4 @@
+import 'package:coinswitch/screen/select_crypto_for_swapping.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../model/availablecrypto.dart';
@@ -11,10 +12,63 @@ class SwapAsset extends StatefulWidget {
 }
 
 class _SwapAssetState extends State<SwapAsset> {
-  final RxString selectedSymbol = 'BTC'.obs;
+  final TextEditingController _controller =
+      TextEditingController(text: available.firstOrNull?.symbol);
 
-  Availablecrypto? get selectedCrypto =>
-      available.firstWhereOrNull((c) => c.symbol == selectedSymbol.value);
+  final RxString selectedSymbolToSell = ''.obs;
+  final RxString selectedSymbolToBuy = 'ETH'.obs;
+
+  // Show bottom sheet to pick "From" address
+  void _showPicker() {
+    showModalBottomSheet(
+      backgroundColor: Colors.grey.shade900,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+      ),
+      context: context,
+      builder: (BuildContext context) {
+        return FractionallySizedBox(
+          heightFactor: 0.77,
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Center(
+                  child: SizedBox(
+                    height: 30,
+                    child: Text(
+                      "Select Address",
+                      style: TextStyle(
+                          fontSize: 15,
+                          color: AppColors.primaryColor,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                SelectCryptoForSwapping(
+                  onSelected: (symbol) {
+                    selectedSymbolToSell.value = symbol;
+                    _controller.text = symbol;
+                    Get.back();
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Availablecrypto? get selectedCryptoToSell =>
+      available.firstWhereOrNull((c) => c.symbol == selectedSymbolToSell.value);
+
+  Availablecrypto? get selectedCryptoToBuy =>
+      available.firstWhereOrNull((c) => c.symbol == selectedSymbolToBuy.value);
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +77,9 @@ class _SwapAssetState extends State<SwapAsset> {
         elevation: 0,
         automaticallyImplyLeading: false,
         backgroundColor: AppColors.backgroundColor,
-        title: Text(
+        title: const Text(
           'Swap',
           style: TextStyle(color: AppColors.primaryColor, fontSize: 16),
-          textAlign: TextAlign.center,
         ),
         centerTitle: true,
       ),
@@ -34,6 +87,7 @@ class _SwapAssetState extends State<SwapAsset> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            // FROM (Asset to Sell)
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
@@ -45,9 +99,48 @@ class _SwapAssetState extends State<SwapAsset> {
                 children: [
                   const Text("From", style: TextStyle(color: Colors.grey)),
                   const SizedBox(height: 10),
+                  TextField(
+                    controller: _controller,
+                    readOnly: true,
+                    onTap: _showPicker,
+                    decoration: const InputDecoration(
+                      // labelText: ,
+                      suffixIcon: Icon(Icons.arrow_drop_down),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        // borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Obx(() {
+                    final selected = selectedCryptoToSell;
+                    return Text(
+                      "Available Balance: ${(selected?.balance.value ?? 0.0)}",
+                      style: const TextStyle(color: Colors.grey),
+                    );
+                  }),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // TO (Asset to Buy)
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.black12,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("To", style: TextStyle(color: Colors.grey)),
+                  const SizedBox(height: 10),
                   Obx(() => DropdownButton<String>(
                         isExpanded: true,
-                        value: selectedSymbol.value,
+                        value: selectedSymbolToBuy.value,
                         items: available.map((crypto) {
                           return DropdownMenuItem<String>(
                             value: crypto.symbol,
@@ -56,18 +149,10 @@ class _SwapAssetState extends State<SwapAsset> {
                         }).toList(),
                         onChanged: (value) {
                           if (value != null) {
-                            selectedSymbol.value = value;
+                            selectedSymbolToBuy.value = value;
                           }
                         },
                       )),
-                  const SizedBox(height: 10),
-                  Obx(() {
-                    final selected = selectedCrypto;
-                    return Text(
-                      "Available Balance: ${(selected?.balance.value ?? 0.0)}",
-                      style: const TextStyle(color: Colors.grey),
-                    );
-                  }),
                 ],
               ),
             ),

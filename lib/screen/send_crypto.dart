@@ -1,7 +1,4 @@
-import 'dart:developer';
-
 import 'package:coinswitch/utils/theme/app_colors.dart';
-import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:coinswitch/service/send_eth.dart';
 import 'package:get/get.dart';

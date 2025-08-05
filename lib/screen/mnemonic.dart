@@ -96,8 +96,34 @@ class _WalletMnemonicState extends State<WalletMnemonic> {
                   child: TextButton.icon(
                       onPressed: () {
                         copyToClipboard();
-                        Get.snackbar('Success', 'Copied to Clipboard',
-                            snackPosition: SnackPosition.BOTTOM);
+                        Get.snackbar(
+                          '',
+                          '',
+                          snackPosition: SnackPosition.TOP,
+                          maxWidth: 270,
+                          padding: EdgeInsets.only(left: 10, top: 20),
+                          margin: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 20),
+                          icon: Padding(
+                            padding:
+                                const EdgeInsets.only(left: 20.0, bottom: 6),
+                            child: Image.asset(
+                              'assets/images/checker.png',
+                              height: 24,
+                              width: 24,
+                            ),
+                          ),
+                          titleText: Container(
+                            height: 20,
+                            child: Text(
+                              'Copied to Clipboard...',
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: AppColors
+                                      .primaryColor), // Set your desired font size here
+                            ),
+                          ),
+                        );
                       },
                       label: const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

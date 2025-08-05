@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:coinswitch/controller/allavailableadress.dart';
+import 'package:coinswitch/controller/websocketServices.dart';
+import 'package:coinswitch/model/availablecrypto.dart';
 import 'package:coinswitch/screen/mnemonic.dart';
 import 'package:coinswitch/service/setupApiLocation.dart';
 import 'package:coinswitch/utils/theme/app_theme.dart';
@@ -12,6 +15,10 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env.development");
   await setupApplication();
+  Get.put(WebSocketController());
+  Get.put(AllAvailableAddress());
+  Get.put(Availablecrypto());
+
   runApp(MyApp());
 }
 
@@ -23,34 +30,11 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // StreamSubscription? _sub;
-
   @override
   void initState() {
     super.initState();
-    // _initDeepLink();
   }
 
-  // void _initDeepLink() {
-  //   _sub = uriLinkStream.listen((Uri? uri) {
-  //     if (uri != null) {
-  //       debugPrint("Deep Link URI: ${uri.toString()}");
-  //       if (uri.toString() == "coinswitch://home") {
-  //         Get.offAllNamed("/home"); // Navigate to home screen
-  //       }
-  //     }
-  //   }, onError: (err) {
-  //     debugPrint("Deep Link Error: $err");
-  //   });
-  // }
-
-  // @override
-  // void dispose() {
-  //   _sub?.cancel();
-  //   super.dispose();
-  // }
-
-  @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: const Size(375, 812),

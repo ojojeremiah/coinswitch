@@ -4,8 +4,10 @@ import 'package:coinswitch/controller/allavailableadress.dart';
 import 'package:coinswitch/controller/assets.dart';
 import 'package:coinswitch/controller/websocketServices.dart';
 import 'package:coinswitch/service/bitcoin_transaction.dart';
+import 'package:coinswitch/service/send_bnb.dart';
 import 'package:coinswitch/service/send_eth.dart';
 import 'package:coinswitch/service/solana_transaction.dart';
+import 'package:coinswitch/service/usdtErc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -15,6 +17,8 @@ final AssetController assetController = Get.put(AssetController());
 final WebSocketController wsController = Get.put(WebSocketController());
 final ethService = EthereumService();
 final sendBTC = BitcoinTransaction();
+final sendBnbService = BnbTransactionService();
+final sendUsdt = EthereumUsdtService();
 
 class Availablecrypto extends GetxController {
   dynamic name;
@@ -101,14 +105,34 @@ List<Availablecrypto> available = [
       balance: assetController.solanaBalance,
       sendFunc: sendSol),
   Availablecrypto(
-    symbol: 'BNB',
-    percentageChange: wsController.percentageChanges['BNB-USDT'] ?? 0.0.obs,
-    priceChange: wsController.priceChanges['BNB-USDT'] ?? 0.0.obs,
-    pictures: AssetImage('assets/images/bnb-bnb-logo.png'),
-    name: 'Binance Chain',
+      symbol: 'BNB',
+      percentageChange: wsController.percentageChanges['BNB-USDT'] ?? 0.0.obs,
+      priceChange: wsController.priceChanges['BNB-USDT'] ?? 0.0.obs,
+      pictures: AssetImage('assets/images/bnb-bnb-logo.png'),
+      name: 'Binance Chain',
+      format: 'EVM',
+      address: allAvailableAddress.ethereumPublicKey,
+      balance: assetController.bnbBalance,
+      sendFunc: sendBnbService.sendBnb),
+  Availablecrypto(
+      symbol: 'USDT',
+      percentageChange: wsController.percentageChanges['USDSC-USDT'] ?? 0.0.obs,
+      priceChange: wsController.priceChanges['USDC-USDT'] ?? 0.0.obs,
+      pictures: AssetImage('assets/images/tether-usdt-logo.png'),
+      name: 'Tether',
+      format: 'EVM',
+      address: allAvailableAddress.ethereumPublicKey,
+      balance: assetController.usdtercBalance,
+      sendFunc: sendUsdt.sendUsdt),
+  Availablecrypto(
+    symbol: 'POL',
+    percentageChange: wsController.percentageChanges['POL-USDT'] ?? 0.0.obs,
+    priceChange: wsController.priceChanges['POL-USDT'] ?? 0.0.obs,
+    pictures: AssetImage('assets/images/matic-logo.webp'),
+    name: 'Polygon',
     format: 'EVM',
     address: allAvailableAddress.ethereumPublicKey,
-    balance: assetController.bnbBalance,
+    balance: assetController.polygonBalance,
   ),
   Availablecrypto(
     symbol: 'LTC',
@@ -119,17 +143,6 @@ List<Availablecrypto> available = [
     format: 'EVM',
     address: allAvailableAddress.litecoinPublicKey,
     balance: assetController.litecoinBalance,
-  ),
-  Availablecrypto(
-    symbol: 'DOGE',
-    percentageChange: wsController.percentageChanges['DOGE-USDT'] ?? 0.0.obs,
-    priceChange: wsController.priceChanges['DOGE-USDT'] ?? 0.0.obs,
-    pictures: AssetImage(
-        'assets/images/dogecoin-doge-logo-6DB3E069BA-seeklogo.com.png'),
-    name: 'Dogecoin',
-    format: 'UTXO',
-    address: allAvailableAddress.dogecoinPublicKey,
-    balance: assetController.dogecoinBalance,
   ),
   Availablecrypto(
     symbol: 'BCH',

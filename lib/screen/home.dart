@@ -1,15 +1,14 @@
-// ignore_for_file: prefer_typing_uninitialized_variables
-
 import 'package:coinswitch/controller/allavailableadress.dart';
 import 'package:coinswitch/controller/assets.dart';
+import 'package:coinswitch/controller/websocketServices.dart';
 import 'package:coinswitch/screen/assets.dart';
 import 'package:coinswitch/screen/availableAddress.dart';
 import 'package:coinswitch/screen/buy_webview.dart';
 import 'package:coinswitch/screen/listofavailablecrypto.dart';
+import 'package:coinswitch/screen/qrAvailableAdress.dart';
 import 'package:coinswitch/screen/sell_webview.dart';
 import 'package:coinswitch/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:get/get.dart';
 
 class Home_Screen extends StatefulWidget {
@@ -26,12 +25,14 @@ class _Home_ScreenState extends State<Home_Screen>
   final AssetController assetController = Get.put(AssetController());
   final AllAvailableAddress allAvailableAddress =
       Get.put(AllAvailableAddress());
+  final WebSocketController webSocketController =
+      Get.put(WebSocketController());
 
   @override
   void initState() {
-    // allAddressFunction();
-    allAvailableAddress;
     super.initState();
+    allAvailableAddress.allAddressFunction();
+    // webSocketController.initializeBybitWebSocket();
     _tabController = TabController(length: 2, vsync: this);
     Future.delayed(const Duration(milliseconds: 3000)).then((value) {
       // setState(() {
@@ -62,9 +63,6 @@ class _Home_ScreenState extends State<Home_Screen>
           children: [
             IconButton(
                 onPressed: () {
-                  // bitcoinBalance = assetService
-                  //     .fetchBalanceForBitcoin(bitcoinPublicKey);
-                  // log(bitcoinBalance);
                   showModalBottomSheet(
                       backgroundColor: Colors.grey.shade900,
                       isScrollControlled: true,
@@ -93,7 +91,7 @@ class _Home_ScreenState extends State<Home_Screen>
                                     ),
                                   ),
                                 ),
-                                Availableaddress()
+                                const Availableaddress()
                               ],
                             ),
                           ),
@@ -218,7 +216,40 @@ class _Home_ScreenState extends State<Home_Screen>
                 ),
                 GestureDetector(
                   onTap: () {
-                    // Get.to(() => );
+                    showModalBottomSheet(
+                        backgroundColor: Colors.grey.shade900,
+                        isScrollControlled: true,
+                        shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20))),
+                        context: context,
+                        builder: (BuildContext context) {
+                          return FractionallySizedBox(
+                            heightFactor: 0.77,
+                            child: Padding(
+                              padding: EdgeInsets.all(10.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                    child: Container(
+                                      height: 30,
+                                      child: Text(
+                                        "Select Address",
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            color: AppColors.primaryColor,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                  const Qravailableadress()
+                                ],
+                              ),
+                            ),
+                          );
+                        });
                   },
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
@@ -311,7 +342,12 @@ class _Home_ScreenState extends State<Home_Screen>
             child: TabBarView(
               controller: _tabController,
               children: <Widget>[
-                Assets(),
+                RefreshIndicator(
+                    onRefresh: () async {
+                      await allAvailableAddress.allAddressFunction();
+                      // await webSocketController.reconnect();
+                    },
+                    child: Assets()),
                 Text(
                   "Hello",
                   style: TextStyle(color: AppColors.primaryColor),

@@ -57,7 +57,8 @@ class _IndividualAdressState extends State<IndividualAdress> {
                   Padding(
                     padding: const EdgeInsets.only(top: 10.0),
                     child: Text(
-                      '0 ${widget.cryptoData.symbol}'.toUpperCase(),
+                      '${widget.cryptoData.balance} ${widget.cryptoData.symbol}'
+                          .toUpperCase(),
                       style: const TextStyle(
                           color: AppColors.primaryColor,
                           fontSize: 30,

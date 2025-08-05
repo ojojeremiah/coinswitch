@@ -17,6 +17,8 @@ class WebSocketController extends GetxController {
     "TON-USDT": "wss://stream.binance.com:9443/ws/tonusdt@ticker",
     "DOGE-USDT": "wss://stream.binance.com:9443/ws/dogeusdt@ticker",
     "XRP-USDT": "wss://stream.binance.com:9443/ws/xrpusdt@ticker",
+    "POL-USDT": "wss://stream.binance.com:9443/ws/polusdt@ticker",
+    "USDC-USDT": "wss://stream.binance.com:9443/ws/usdsusdt@ticker",
   };
 
   final Map<String, WebSocketChannel> _channels = {};

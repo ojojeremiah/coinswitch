@@ -13,19 +13,19 @@ class AllAvailableAddress extends GetxController {
   var bitcoinPublicKey = ''.obs;
   var ethereumPublicKey = ''.obs;
   var litecoinPublicKey = ''.obs;
-  var dogecoinPublicKey = ''.obs;
   var solanaPublicKey = ''.obs;
   var xrpPublicKey = ''.obs;
   var bitcoincashPublicKey = ''.obs;
   var userwalletPrivateKey = ''.obs;
+  var tronPublicKey = ''.obs;
 
   @override
-  void onInit() {
-    allAddressFunction();
+  void onInit() async {
     super.onInit();
+    await allAddressFunction();
   }
 
-  void allAddressFunction() async {
+  Future<void> allAddressFunction() async {
     final walletMnemonic = await userAssetMnemonic.getAssetsData();
     final walletPrivateKey =
         await userWallet.getWalletPrivateKey(walletMnemonic);
@@ -39,6 +39,15 @@ class AllAvailableAddress extends GetxController {
     if (bitcoinPublicKey.value.isNotEmpty &&
         bitcoinPublicKey.value.length % 2 == 0) {
       await assetController.fetchBitcoinBalance(bitcoinPublicKey.value);
+    }
+
+    //tronKey
+    final tronPublicAddress =
+        await userWallet.getTronPublicKey(walletPrivateKey);
+    await allPublicKey.settronAddress(tronPublicAddress);
+    tronPublicKey.value = await allPublicKey.gettronData();
+    if (tronPublicKey.value.isNotEmpty && tronPublicKey.value.length % 2 == 0) {
+      // await assetController.fetchBitcoinBalance(bitcoinPublicKey.value);
     }
 
     //ethereumkey
@@ -58,22 +67,21 @@ class AllAvailableAddress extends GetxController {
     litecoinPublicKey.value = await allPublicKey.getLitecoinData();
     await assetController.fetchLitecoinBalance(litecoinPublicKey.value);
 
-    //dogecoinKey
-    final dogecoinPublicAddress =
-        await userWallet.getDogecoinbaseAddressPublicKey(walletPrivateKey);
-    await allPublicKey.setDogeAddress(dogecoinPublicAddress);
-    dogecoinPublicKey.value = await allPublicKey.getDogeData();
-    await assetController.fetchDogeBalance(dogecoinPublicKey.value);
-
-    //bnbkey
-    await assetController.fetchBnbBalance(ethereumPublicKey.value);
-
     //solanaKey
     final solanaPublicAddress =
         await userWallet.getSolanaPublicKey(walletPrivateKey);
     await allPublicKey.setSolanaAddress("$solanaPublicAddress");
     solanaPublicKey.value = await allPublicKey.getSolanaData();
     await assetController.fetchSolanaBalance(solanaPublicKey.value);
+
+    //polybalance
+    await assetController.fetchPolygonBalance(ethereumPublicKey.value);
+
+    // usdttetherbalance
+    await assetController.fetchErcUsdtBalance(ethereumPublicKey.value);
+
+    //bnbbalance
+    await assetController.fetchBnbBalance(ethereumPublicKey.value);
 
     //bitcoincashKey
     final bitcoincashPublicKeyAddress =
