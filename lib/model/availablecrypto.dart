@@ -2,6 +2,7 @@
 
 import 'package:coinswitch/controller/allavailableadress.dart';
 import 'package:coinswitch/controller/assets.dart';
+import 'package:coinswitch/controller/crypto_price_info.dart';
 import 'package:coinswitch/controller/websocketServices.dart';
 import 'package:coinswitch/service/bitcoin_transaction.dart';
 import 'package:coinswitch/service/send_bnb.dart';
@@ -13,7 +14,8 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 final AllAvailableAddress allAvailableAddress = Get.put(AllAvailableAddress());
-final AssetController assetController = Get.put(AssetController());
+final AssetController assetController = Get.find();
+final CryptoPriceInfo cryptoPriceInfo = Get.find();
 final WebSocketController wsController = Get.put(WebSocketController());
 final ethService = EthereumService();
 final sendBTC = BitcoinTransaction();
@@ -30,18 +32,19 @@ class Availablecrypto extends GetxController {
   dynamic symbol;
   RxDouble? percentageChange;
   dynamic sendFunc;
+  dynamic balanceInUsd;
 
-  Availablecrypto({
-    this.pictures,
-    this.name,
-    this.symbol,
-    this.priceChange,
-    this.percentageChange,
-    this.address,
-    this.balance,
-    this.format,
-    this.sendFunc,
-  });
+  Availablecrypto(
+      {this.pictures,
+      this.name,
+      this.symbol,
+      this.priceChange,
+      this.percentageChange,
+      this.address,
+      this.balance,
+      this.format,
+      this.sendFunc,
+      this.balanceInUsd});
 
   // var selectedSymbol = 'BTC'.obs;
   // Availablecrypto? get selectedCrypto =>
@@ -57,7 +60,8 @@ class Availablecrypto extends GetxController {
           format: json["format"],
           address: json["address"],
           balance: json["balance"],
-          sendFunc: json["sendFunc"]);
+          sendFunc: json["sendFunc"],
+          balanceInUsd: json["balanceInUsd"]);
 
   Map<String, dynamic> toJson() => {
         "symbol": symbol,
@@ -69,45 +73,50 @@ class Availablecrypto extends GetxController {
         "address": address,
         "balance": balance,
         "sendFunc": sendFunc,
+        "balanceInUsd": balanceInUsd,
       };
 }
 
 List<Availablecrypto> available = [
   Availablecrypto(
-    symbol: 'BTC',
-    percentageChange: wsController.percentageChanges['BTC-USDT'] ?? 0.0.obs,
-    priceChange: wsController.priceChanges['BTC-USDT'] ?? 0.0.obs,
-    pictures: AssetImage('assets/images/bitcoin-btc-logo.png'),
-    name: 'Bitcoin',
-    format: 'UTXO',
-    address: allAvailableAddress.bitcoinPublicKey,
-    balance: assetController.bitcoinBalance,
-    sendFunc: sendBTC.sendBitcoin,
-  ),
+      symbol: 'BTC',
+      percentageChange: cryptoPriceInfo.bitcoinPriceChangePercentage24H,
+      priceChange: cryptoPriceInfo.bitcoinCurrentPrice,
+      pictures: AssetImage('assets/images/bitcoin-btc-logo.png'),
+      name: 'Bitcoin',
+      format: 'UTXO',
+      address: allAvailableAddress.bitcoinPublicKey,
+      balance: assetController.bitcoinBalance,
+      sendFunc: sendBTC.sendBitcoin,
+      balanceInUsd: assetController.bitcoinBalance *
+          cryptoPriceInfo.bitcoinCurrentPrice.value),
   Availablecrypto(
       symbol: 'ETH',
-      percentageChange: wsController.percentageChanges['ETH-USDT'] ?? 0.0.obs,
-      priceChange: wsController.priceChanges['ETH-USDT'] ?? 0.0.obs,
+      percentageChange: cryptoPriceInfo.ethereumPriceChangePercentage24H,
+      priceChange: cryptoPriceInfo.ethereumCurrentPrice,
       pictures: AssetImage('assets/images/ethereum.png'),
       name: 'Ethereum',
       format: 'EVM',
       address: allAvailableAddress.ethereumPublicKey,
       balance: assetController.ethereumBalance,
+      // balanceInUsd: assetController.ethereumBalance.value *
+      //     cryptoPriceInfo.ethereumCurrentPrice.value,
       sendFunc: ethService.sendEth),
   Availablecrypto(
       symbol: 'SOL',
-      percentageChange: wsController.percentageChanges['SOL-USDT'] ?? 0.0.obs,
-      priceChange: wsController.priceChanges['SOL-USDT'] ?? 0.0.obs,
+      percentageChange: cryptoPriceInfo.solanaPriceChangePercentage24H,
+      priceChange: cryptoPriceInfo.solanaCurrentPrice,
       pictures: AssetImage('assets/images/Solana-Logo.png'),
       name: 'Solana',
       format: 'SOL',
       address: allAvailableAddress.solanaPublicKey,
       balance: assetController.solanaBalance,
+      // balanceInUsd: assetController.solanaBalance.value*cryptoPriceInfo.solanaCurrentPrice,
       sendFunc: sendSol),
   Availablecrypto(
       symbol: 'BNB',
-      percentageChange: wsController.percentageChanges['BNB-USDT'] ?? 0.0.obs,
-      priceChange: wsController.priceChanges['BNB-USDT'] ?? 0.0.obs,
+      percentageChange: cryptoPriceInfo.bnbPriceChangePercentage24H,
+      priceChange: cryptoPriceInfo.bnbCurrentPrice,
       pictures: AssetImage('assets/images/bnb-bnb-logo.png'),
       name: 'Binance Chain',
       format: 'EVM',
@@ -115,9 +124,21 @@ List<Availablecrypto> available = [
       balance: assetController.bnbBalance,
       sendFunc: sendBnbService.sendBnb),
   Availablecrypto(
+    symbol: 'TRX',
+    percentageChange: cryptoPriceInfo.tronPriceChangePercentage24H,
+    priceChange: cryptoPriceInfo.tronCurrentPrice,
+    pictures: AssetImage('assets/images/tron.png'),
+    name: 'Tron',
+    format: 'TRX',
+    address: allAvailableAddress.tronPublicKey,
+    balanceInUsd:
+        assetController.tronBalance * cryptoPriceInfo.tronCurrentPrice.value,
+    balance: assetController.tronBalance,
+  ),
+  Availablecrypto(
       symbol: 'USDT',
-      percentageChange: wsController.percentageChanges['USDSC-USDT'] ?? 0.0.obs,
-      priceChange: wsController.priceChanges['USDC-USDT'] ?? 0.0.obs,
+      percentageChange: cryptoPriceInfo.etherusdtPriceChangePercentage24H,
+      priceChange: cryptoPriceInfo.etherusdtCurrentPrice,
       pictures: AssetImage('assets/images/tether-usdt-logo.png'),
       name: 'Tether',
       format: 'EVM',
@@ -126,8 +147,8 @@ List<Availablecrypto> available = [
       sendFunc: sendUsdt.sendUsdt),
   Availablecrypto(
     symbol: 'POL',
-    percentageChange: wsController.percentageChanges['POL-USDT'] ?? 0.0.obs,
-    priceChange: wsController.priceChanges['POL-USDT'] ?? 0.0.obs,
+    percentageChange: cryptoPriceInfo.polygonPriceChangePercentage24H,
+    priceChange: cryptoPriceInfo.polygonCurrentPrice,
     pictures: AssetImage('assets/images/matic-logo.webp'),
     name: 'Polygon',
     format: 'EVM',
@@ -136,8 +157,8 @@ List<Availablecrypto> available = [
   ),
   Availablecrypto(
     symbol: 'LTC',
-    percentageChange: wsController.percentageChanges['LTC-USDT'] ?? 0.0.obs,
-    priceChange: wsController.priceChanges['LTC-USDT'] ?? 0.0.obs,
+    percentageChange: cryptoPriceInfo.bitcoinPriceChangePercentage24H,
+    priceChange: cryptoPriceInfo.bitcoinCurrentPrice,
     pictures: AssetImage('assets/images/Litecoin.svg.png'),
     name: 'Litecoin',
     format: 'EVM',
@@ -146,8 +167,8 @@ List<Availablecrypto> available = [
   ),
   Availablecrypto(
     symbol: 'BCH',
-    percentageChange: wsController.percentageChanges['BCH-USDT'] ?? 0.0.obs,
-    priceChange: wsController.priceChanges['BCH-USDT'] ?? 0.0.obs,
+    percentageChange: cryptoPriceInfo.bitcoinPriceChangePercentage24H,
+    priceChange: cryptoPriceInfo.bitcoinCurrentPrice,
     pictures: AssetImage('assets/images/bitcoin-cash-bch-logo.png'),
     name: 'Bitcoin Cash',
     format: 'EVM',
@@ -156,8 +177,8 @@ List<Availablecrypto> available = [
   ),
   Availablecrypto(
     symbol: 'XRP',
-    percentageChange: wsController.percentageChanges['XRP-USDT'] ?? 0.0.obs,
-    priceChange: wsController.priceChanges['XRP-USDT'] ?? 0.0.obs,
+    percentageChange: cryptoPriceInfo.bitcoinPriceChangePercentage24H,
+    priceChange: cryptoPriceInfo.bitcoinCurrentPrice,
     pictures: AssetImage('assets/images/xrp-logo.png'),
     name: 'Ripple',
     format: 'UTXO',

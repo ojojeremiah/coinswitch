@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-List<CryptoData> assets = [];
-List<NftModel> nfts = [];
+// List<CryptoData> assets = [];
+// List<NftModel> nfts = [];
 
 class AssetService {
   final DioClient dioClient = DioClient();
@@ -23,7 +23,13 @@ class AssetService {
 
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;
-        return data.map((json) => CryptoData.fromJson(json)).toList();
+        List<CryptoData> cryptoList =
+            data.map((json) => CryptoData.fromJson(json)).toList();
+        final bitcoin = cryptoList.firstWhere((coin) => coin.id == 'bitcoin');
+        log('Bitcoin current price: \$${bitcoin.currentPrice}');
+        log('24h change: ${bitcoin.priceChangePercentage24H}%');
+        cryptoList.firstWhere((coin) => coin.id == 'bitcoin');
+        return cryptoList;
       } else {
         throw Exception('Failed to load assets');
       }
@@ -70,19 +76,49 @@ class AssetService {
     }
   }
 
-  Future fetchBalanceForEthereum(String assetAddressBalance) async {
+  Future fetchBalanceForTron(String assetAddress) async {
     try {
-      final response = await dioClient.get(
-        Endpoints.assetBalanceHead +
-            Endpoints.assetBalanceNetworkforEthereum +
-            Endpoints.assetBalanceMiddle +
-            assetAddressBalance +
-            Endpoints.assetBalanceTail,
-      );
+      final response = await dioClient.get(dotenv.env['TRON_ADDRESS_BALANCE']!,
+          queryParameters: {"address": assetAddress});
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = response.data;
-        final int assets = data['final_balance'];
+        final int assets = data['balance'];
+        log("====================== btc balance $assets");
+        return assets;
+      } else {
+        throw Exception('Failed to load assets');
+      }
+    } on DioException catch (e) {
+      final errorMessage = DioExceptions.fromDioError(e).toString();
+      Fluttertoast.showToast(
+        msg: "Network Connection failed",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.grey[900],
+        textColor: Colors.white,
+        fontSize: 14,
+      );
+      throw errorMessage;
+    }
+  }
+
+  Future fetchBalanceForEthereum(String assetAddressBalance) async {
+    try {
+      final response = await dioClient
+          .get(dotenv.env['ETHER_BALANCE_CHECKER']!, queryParameters: {
+        "chainid": 1,
+        "module": "account",
+        "action": "balance",
+        "address": assetAddressBalance,
+        "tag": "latest",
+        "apikey": dotenv.env['ETHER_BALANCE_CHECKER_TAIL']!
+      });
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = response.data;
+        final int assets = data['result'] ?? '0';
         // log("$assets");
         return assets;
       } else {

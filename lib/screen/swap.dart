@@ -105,7 +105,6 @@ class _SwapAssetState extends State<SwapAsset> {
                     onTap: _showPicker,
                     decoration: const InputDecoration(
                       // labelText: ,
-                      suffixIcon: Icon(Icons.arrow_drop_down),
                       border: OutlineInputBorder(
                         borderSide: BorderSide.none,
                         // borderRadius: BorderRadius.circular(10),

@@ -344,7 +344,10 @@ class _Home_ScreenState extends State<Home_Screen>
               children: <Widget>[
                 RefreshIndicator(
                     onRefresh: () async {
+                      assetController.fetchAssets();
                       await allAvailableAddress.allAddressFunction();
+                      // assetController.fetchAssets();
+                      // assetController.fetchBitcoinPriceInfo();
                       // await webSocketController.reconnect();
                     },
                     child: Assets()),

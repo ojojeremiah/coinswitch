@@ -16,12 +16,13 @@ class AssetController extends GetxController {
   var assets = <CryptoData>[].obs;
   var nfts = <NftModel>[].obs;
   var bitcoinBalance = 0.obs;
-  var ethereumBalance = 0.obs;
+  var ethereumBalance = "".obs;
   var polygonBalance = "".obs;
   var usdtercBalance = "".obs;
   var litecoinBalance = 0.obs;
   var bnbBalance = "".obs;
   var solanaBalance = "".obs;
+  var tronBalance = 0.obs;
   var bitcoincashBalance = 0.obs;
   var fromCrypto = 'BTC'.obs;
   var toCrypto = 'ETH'.obs;
@@ -56,30 +57,6 @@ class AssetController extends GetxController {
     }
   }
 
-  Future<void> fetchExchangeRate() async {
-    try {
-      final data = await assetService.fetchExchangeRate(
-          fromCrypto.value.toLowerCase(), toCrypto.value.toLowerCase());
-      double fromPrice = data[fromCrypto.value.toLowerCase()]['usd'];
-      double toPrice = data[toCrypto.value.toLowerCase()]['usd'];
-      exchangeRate.value = fromPrice / toPrice;
-      log("================================exchangeRate=======================");
-      log('${exchangeRate}');
-      updateEstimatedAmount();
-    } catch (e) {
-      Get.snackbar('Error', 'Failed to fetch exchange rate',
-          snackPosition: SnackPosition.BOTTOM);
-    }
-  }
-
-  void updateEstimatedAmount() {
-    if (amount.value.isNotEmpty) {
-      double inputAmount = double.tryParse(amount.value) ?? 0.0;
-      estimatedAmount.value =
-          (inputAmount * exchangeRate.value).toStringAsFixed(6);
-    }
-  }
-
   void swap() {
     Get.snackbar('Success',
         'Swapped ${amount.value} ${fromCrypto.value} to ${estimatedAmount.value} ${toCrypto.value}',
@@ -111,6 +88,27 @@ class AssetController extends GetxController {
       bitcoinBalance.value = cryptoList;
       log("===============================================");
       log("${bitcoinBalance.value}");
+    } on DioException catch (e) {
+      final errorMessage = DioExceptions.fromDioError(e).toString();
+      Fluttertoast.showToast(
+        msg: "Network Connection failed",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.grey[900],
+        textColor: Colors.white,
+        fontSize: 14,
+      );
+      throw errorMessage;
+    }
+  }
+
+  Future fetchTronBalance(String assetAddress) async {
+    try {
+      var cryptoList = await assetService.fetchBalanceForTron(assetAddress);
+      tronBalance.value = cryptoList;
+      log("===============================================");
+      log("${tronBalance.value}");
     } on DioException catch (e) {
       final errorMessage = DioExceptions.fromDioError(e).toString();
       Fluttertoast.showToast(

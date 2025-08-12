@@ -149,7 +149,7 @@ class _CryptoDataState extends State<CryptoData> {
                                           fontWeight: FontWeight.bold),
                                     ),
                                     Text(
-                                      '${crypto.marketCapChangePercentage24H}%',
+                                      '${value.format(crypto.marketCapChangePercentage24H)}%',
                                       style: TextStyle(
                                         color:
                                             crypto.marketCapChangePercentage24H! >=

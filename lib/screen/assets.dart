@@ -109,7 +109,7 @@ class _AssetsState extends State<Assets> {
                                                     right: 5),
                                                 child: Obx(
                                                   () => Text(
-                                                    '\$${valueFormatter.format(userAssets.priceChange!.value)}',
+                                                    '${valueFormatter.format(userAssets.priceChange!.value)}',
                                                     style: TextStyle(
                                                         color: AppColors
                                                             .primaryColor,
@@ -137,7 +137,7 @@ class _AssetsState extends State<Assets> {
                                                           : Colors.red,
                                                     ),
                                                     Text(
-                                                      "${userAssets.percentageChange!.value.toStringAsFixed(2)}%",
+                                                      "${valueFormatter.format(double.parse(userAssets.percentageChange!.value.toStringAsFixed(2)))}%",
                                                       style: TextStyle(
                                                           color: userAssets
                                                                       .percentageChange!
@@ -181,14 +181,14 @@ class _AssetsState extends State<Assets> {
                                   children: [
                                     Obx(
                                       () => Text(
-                                        "${userAssets.balance}",
+                                        "${userAssets.balance.value}",
                                         style: const TextStyle(
                                             color: AppColors.colorGrey,
                                             fontSize: 18),
                                       ),
                                     ),
                                     Text(
-                                      "\$ 0.0",
+                                      '\$0.0',
                                       style: TextStyle(
                                           color: AppColors.primaryColor,
                                           fontSize: 15),

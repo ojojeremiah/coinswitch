@@ -1,4 +1,5 @@
 import 'package:coinswitch/controller/assets.dart';
+import 'package:coinswitch/controller/crypto_price_info.dart';
 import 'package:coinswitch/controller/user_wallet.dart';
 import 'package:coinswitch/service/mnemonic.dart';
 import 'package:coinswitch/service/savaAllPublicKey.dart';
@@ -9,6 +10,7 @@ class AllAvailableAddress extends GetxController {
   final UserWallet userWallet = Get.put(UserWallet());
   final userMnemonic userAssetMnemonic = userMnemonic();
   final AssetController assetController = Get.put(AssetController());
+  final CryptoPriceInfo cryptoPriceInfo = Get.put(CryptoPriceInfo());
 
   var bitcoinPublicKey = ''.obs;
   var ethereumPublicKey = ''.obs;
@@ -35,30 +37,23 @@ class AllAvailableAddress extends GetxController {
     final bitcoinPublicAddress =
         await userWallet.getBitcoinbaseAddressPublicKey(walletPrivateKey);
     await allPublicKey.setBitcoinAddress(bitcoinPublicAddress);
+    cryptoPriceInfo.fetchBitcoinPriceInfo();
     bitcoinPublicKey.value = await allPublicKey.getBitcoinData();
-    if (bitcoinPublicKey.value.isNotEmpty &&
-        bitcoinPublicKey.value.length % 2 == 0) {
-      await assetController.fetchBitcoinBalance(bitcoinPublicKey.value);
-    }
+    await assetController.fetchBitcoinBalance(bitcoinPublicKey.value);
 
     //tronKey
     final tronPublicAddress =
         await userWallet.getTronPublicKey(walletPrivateKey);
     await allPublicKey.settronAddress(tronPublicAddress);
     tronPublicKey.value = await allPublicKey.gettronData();
-    if (tronPublicKey.value.isNotEmpty && tronPublicKey.value.length % 2 == 0) {
-      // await assetController.fetchBitcoinBalance(bitcoinPublicKey.value);
-    }
+    await assetController.fetchTronBalance(tronPublicKey.value);
 
     //ethereumkey
     final ethereumPublicAddress =
         await userWallet.getEthereumPublicKey(walletPrivateKey);
     await allPublicKey.setEthereumAddress("$ethereumPublicAddress");
     ethereumPublicKey.value = await allPublicKey.getEthereumData();
-    if (ethereumPublicKey.value.isNotEmpty &&
-        ethereumPublicKey.value.length % 2 == 0) {
-      await assetController.fetchEthereumBalance(ethereumPublicKey.value);
-    }
+    await assetController.fetchEthereumBalance(ethereumPublicKey.value);
 
     //litecoinKey
     final litecoinPublicAddress =
